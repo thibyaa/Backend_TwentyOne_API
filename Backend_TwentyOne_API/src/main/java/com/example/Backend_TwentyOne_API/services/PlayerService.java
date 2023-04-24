@@ -1,6 +1,9 @@
 package com.example.Backend_TwentyOne_API.services;
 
+import com.example.Backend_TwentyOne_API.models.Game;
 import com.example.Backend_TwentyOne_API.models.Player;
+import com.example.Backend_TwentyOne_API.models.Reply;
+import com.example.Backend_TwentyOne_API.repositories.GameRepository;
 import com.example.Backend_TwentyOne_API.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,12 @@ public class PlayerService {
     @Autowired
     PlayerRepository playerRepository;
 
+    @Autowired
+    GameService gameService;
+
+    @Autowired
+    GameRepository gameRepository;
+
     public List<Player> getAllPlayers(){
         return playerRepository.findAll();
     }
@@ -22,4 +31,5 @@ public class PlayerService {
     public Optional<Player> getPlayerById(Long playerId) {
         return playerRepository.findById(playerId);
     }
+
 }

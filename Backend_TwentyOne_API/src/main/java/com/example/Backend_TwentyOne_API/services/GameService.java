@@ -64,4 +64,37 @@ public class GameService {
                 "Game with id " + game.getId() + " has already been started"
         );
     }
+
+    public Reply processTurn (Long gameId, int guess){
+
+        // find the correct game
+        Game game = gameRepository.findById(gameId).get();
+
+        // Check if game has started
+        if(!game.getHasStarted()){
+            return new Reply(
+                    game.getCurrentTotal(),
+                    false,
+                    "game has not started"
+            );
+        }
+
+        // Check game is already complete
+        if (game.getComplete()){
+            return new Reply(
+                    game.getCurrentTotal(),
+                    true,
+                    "game is already complete"
+            );
+        }
+
+        // increment total
+        game.setCurrentTotal(game.getCurrentTotal()+ guess);
+        gameRepository.save(game);
+
+        // Check is below 21
+        if (game.getCurrentTotal()> 20){
+            return new Reply(game.getCurrentTotal(),true,"Game Over! You lose :(");
+        }
+    }
 }

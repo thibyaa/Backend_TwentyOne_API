@@ -43,6 +43,8 @@ public class GameController {
 
     @PatchMapping(value = "/{gameId}")
     public ResponseEntity<Reply> startNewGame(@PathVariable Long gameId){
+                    // check if game started, check if game has player,
+
         Optional<Game> game = gameService.getGameById(gameId);
         if(game.isPresent() && game.get().getHasStarted()==false) {
             Reply reply = gameService.startNewGame(gameId);
@@ -55,4 +57,11 @@ public class GameController {
         }
     }
 
+    @PatchMapping(value = "/{gameId}")
+    public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,@RequestParam int guess){
+        Reply reply = gameService.processTurn(gameId,guess);
+        return new ResponseEntity<>(reply, HttpStatus.OK);
+    }
+
+//
 }
