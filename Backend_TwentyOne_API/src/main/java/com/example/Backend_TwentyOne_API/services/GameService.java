@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 public class GameService {
 
+
     @Autowired
     GameRepository gameRepository;
 
@@ -38,7 +39,29 @@ public class GameService {
         return new Reply(
                 0,
                 false,
-                "Started new game with id " + game.getId() + " with lead player " + player.getName()
+                "Create new game with id " + game.getId() + " with lead player " + player.getName()
+        );
+    }
+
+    public Reply startNewGame(Long gameId) {
+        Game game = getGameById(gameId).get();
+        game.setHasStarted(true);
+        gameRepository.save(game);
+        return new Reply(
+                0,
+                false,
+                "Game with id " + game.getId() + " has started"
+        );
+    }
+
+    public Reply startGameAlreadyStarted(Long gameId){
+        Game game = getGameById(gameId).get();
+        int currentTotal = game.getCurrentTotal();
+        Boolean complete = game.getComplete();
+        return new Reply(
+                currentTotal,
+                complete,
+                "Game with id " + game.getId() + " has already been started"
         );
     }
 }
