@@ -23,7 +23,7 @@ public class Game {
     private int currentTotal;
 
     @ManyToOne
-    @Column(name = "lead_player_id")
+    @JoinColumn(name = "lead_player_id")
     @JsonIgnoreProperties({"games"})
     private Player leadPlayer;
 
