@@ -1,4 +1,4 @@
-package models;
+package com.example.Backend_TwentyOne_API.models;
 
 public class Reply {
     private int gameState;

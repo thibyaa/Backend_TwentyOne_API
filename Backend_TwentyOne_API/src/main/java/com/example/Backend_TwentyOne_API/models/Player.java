@@ -1,7 +1,6 @@
-package models;
+package com.example.Backend_TwentyOne_API.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.jsonschema.JsonSerializableSchema;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
