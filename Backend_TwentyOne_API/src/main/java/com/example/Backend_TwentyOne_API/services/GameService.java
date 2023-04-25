@@ -278,4 +278,29 @@ Random random = new Random();
     }
 
 
+    public Reply startNewGameMultiplayer(Long gameId) {
+        //        get game by id
+        Game game = getGameById(gameId).get();
+
+//        start game
+        game.setHasStarted(true);
+
+//        flip coin to decide who starts
+        int whoToStart = random.nextInt(0,game.getPlayers().size());
+        Player player = game.getPlayers().get(whoToStart);
+        Long firstPlayerId = player.getId();
+        game.setCurrentPlayerId(firstPlayerId);
+        String firstPlayerName = player.getName();
+
+//       identify starting player and personalise message
+        String message = "Player " + firstPlayerId + ", " + firstPlayerName + ", to start!";
+
+        gameRepository.save(game);
+
+        return new Reply(
+                game.getCurrentTotal(),
+                false,
+                message
+        );
+    }
 }
