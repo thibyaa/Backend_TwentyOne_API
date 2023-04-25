@@ -86,20 +86,29 @@ public class GameController {
 
 //        get game by gameId
 //        get player by playerId
+//        check if the game exists
+//        check if the player exists
+//        check if game is not complete
 //        check player who submits guess is player whose turn it is
 //        check guess is 1,2,or 3
 //        then processTurnMultiplayer(gameId, guess)
 //        otherwise processTurnSinglePlayer(gameId, guess)
-        Game game = gameService.getGameById(gameId).get();
-            Player player = playerService.getPlayerById(playerId).get();
-            if(game.getCurrentPlayerId() != playerId){
+
+        Optional<Game> game = gameService.getGameById(gameId);
+        Optional<Player> player = playerService.getPlayerById(playerId);
+        if (!game.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if(!player.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } 
+            else if(game.get().getCurrentPlayerId() != playerId){
                 Reply reply = gameService.wrongPlayer(gameId, playerId);
                 return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
             }else if(!((guess < 4) && (guess >0))){
                 Reply reply = gameService.invalidGuess(gameId);
                 return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
             }
-            else if (game.getGameType().equals(GameType.MULTIPLAYER)) {
+            else if (game.get().getGameType().equals(GameType.MULTIPLAYER)) {
                 Reply reply = gameService.processTurnMultiplayer(gameId, guess);
                 return new ResponseEntity<>(reply, HttpStatus.OK);
             }
