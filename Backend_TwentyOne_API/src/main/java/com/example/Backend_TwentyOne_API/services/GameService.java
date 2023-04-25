@@ -243,7 +243,7 @@ Random random = new Random();
         );
     }
 
-    public Game addPlayerToGame(Long playerId, Long gameId) {
+    public Reply addPlayerToGame(Long playerId, Long gameId) {
 //        first get the actual player by the playerId
 //        then, get the game by the gameId
 //        add players to the array list and to the games array list
@@ -253,7 +253,8 @@ Random random = new Random();
         Game game = getGameById(gameId).get();
         game.addPlayer(player);
         gameRepository.save(game);
-        return game;
+        String message = "Player " + player.getId() + ", " + player.getName() + ", has been added to game " + game.getId() + ".";
+        return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 
     public Reply startGameMultiplayerNotEnoughPlayers(Long gameId) {
@@ -302,5 +303,18 @@ Random random = new Random();
                 false,
                 message
         );
+    }
+
+    public Reply addPlayerToGameAlreadyContains(Long gameId, Long playerId) {
+        Game game = getGameById(gameId).get();
+        Player player = playerService.getPlayerById(playerId).get();
+        String message = "You're already here, "  + player.getName() + "!";
+        return new Reply(game.getCurrentTotal(), game.getComplete(), message);
+    }
+
+    public Reply addPlayerToGameAlreadyStarted(Long gameId) {
+        Game game = getGameById(gameId).get();
+        String message = "Game " + game.getId() + " has already started. Cannot add anymore players";
+        return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 }

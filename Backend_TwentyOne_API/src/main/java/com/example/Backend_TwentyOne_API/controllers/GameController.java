@@ -107,11 +107,38 @@ public class GameController {
             return new ResponseEntity<>(reply, HttpStatus.OK);}
     }
 
+    // Check
+
+
     @PostMapping( value = "/{gameId}")
-    public ResponseEntity<Game> addPlayerToGame(@PathVariable Long gameId, @RequestParam Long playerId){
-        Game savedGame = gameService.addPlayerToGame(playerId, gameId);
-        return new ResponseEntity<>(savedGame, HttpStatus.ACCEPTED);
+    public ResponseEntity<Reply> addPlayerToGame(@PathVariable Long gameId, @RequestParam Long playerId) {
+        // Get the game by the GameId,
+        // get player by playerId,
+        // Check the game exists
+        // Check the player exists
+        // Check the players not in the game
+        // Check the game hasn't started
+        Optional <Game> game = gameService.getGameById(gameId);
+        Optional <Player> player = playerService.getPlayerById(playerId);
+        if (!game.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (!player.isPresent()) {
+            return  new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (game.get().getPlayers().contains(player)) {
+            Reply reply = gameService.addPlayerToGameAlreadyContains(gameId, playerId);
+            return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else if (game.get().getHasStarted()) {
+              Reply reply = gameService.addPlayerToGameAlreadyStarted(gameId);
+              return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            Reply reply = gameService.addPlayerToGame(playerId, gameId);
+            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
+        }
+
+
     }
+
+
 
 //
 }
