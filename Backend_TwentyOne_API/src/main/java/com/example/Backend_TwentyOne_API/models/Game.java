@@ -25,6 +25,9 @@ public class Game {
     @Column(name = "current_player_id")
     private Long currentPlayerId;
 
+    @Column(name = "game_type")
+    private GameType gameType;
+
 
     @ManyToOne
     @JoinColumn(name = "lead_player_id")
@@ -41,7 +44,7 @@ public class Game {
     private List<Player> players;
 
 
-    public Game(Player leadPlayer){
+    public Game(Player leadPlayer, GameType gameType){
         this.currentTotal = 0;
         this.currentPlayerId = leadPlayer.getId();
         this.hasStarted = false;
@@ -49,6 +52,7 @@ public class Game {
         this.leadPlayer = leadPlayer;
         this.players = new ArrayList<>();
         this.players.add(leadPlayer);
+        this.gameType = gameType;
 
     }
 
@@ -108,5 +112,13 @@ public class Game {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    public GameType getGameType() {
+        return gameType;
+    }
+
+    public void setGameType(GameType gameType) {
+        this.gameType = gameType;
     }
 }

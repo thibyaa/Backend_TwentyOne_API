@@ -1,6 +1,7 @@
 package com.example.Backend_TwentyOne_API.components;
 
 import com.example.Backend_TwentyOne_API.models.Game;
+import com.example.Backend_TwentyOne_API.models.GameType;
 import com.example.Backend_TwentyOne_API.models.Player;
 import com.example.Backend_TwentyOne_API.repositories.GameRepository;
 import com.example.Backend_TwentyOne_API.repositories.PlayerRepository;
@@ -33,9 +34,9 @@ public class DataLoader implements ApplicationRunner {
         Player player4 = new Player("Isabel");
         playerRepository.save(player4);
 
-        Game game1 = new Game(player1);
+        Game game1 = new Game(player1, GameType.EASY);
         gameRepository.save(game1);
-        Game game2 = new Game(player2);
+        Game game2 = new Game(player2, GameType.DIFFICULT);
         game2.setHasStarted(true);
         game2.setCurrentTotal(15);
         gameRepository.save(game2);

@@ -1,6 +1,7 @@
 package com.example.Backend_TwentyOne_API.services;
 
 import com.example.Backend_TwentyOne_API.models.Game;
+import com.example.Backend_TwentyOne_API.models.GameType;
 import com.example.Backend_TwentyOne_API.models.Player;
 import com.example.Backend_TwentyOne_API.models.Reply;
 import com.example.Backend_TwentyOne_API.repositories.GameRepository;
@@ -32,9 +33,9 @@ public class GameService {
     }
 
 
-    public Reply createNewGame(long playerId) {
+    public Reply createNewGame(long playerId, GameType gameType) {
         Player player = playerService.getPlayerById(playerId).get();
-        Game game = new Game(player);
+        Game game = new Game(player, gameType);
         gameRepository.save(game);
         return new Reply(
                 0,
@@ -96,5 +97,12 @@ public class GameService {
         if (game.getCurrentTotal()> 20){
             return new Reply(game.getCurrentTotal(),true,"Game Over! You lose :(");
         }
+
+       // Computer guess
+        // Is the guess "easy" or "hard"? (ENUM)
+        // increment the total
+        // Check if total is >20. If so , reply "You win! :) "
+        // If not, return the current total to the player prompting next input
+
     }
 }

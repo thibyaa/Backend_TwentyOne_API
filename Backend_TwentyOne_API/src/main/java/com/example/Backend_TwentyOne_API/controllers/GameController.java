@@ -1,6 +1,7 @@
 package com.example.Backend_TwentyOne_API.controllers;
 
 import com.example.Backend_TwentyOne_API.models.Game;
+import com.example.Backend_TwentyOne_API.models.GameType;
 import com.example.Backend_TwentyOne_API.models.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,8 +37,8 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId){
-        Reply reply = gameService.createNewGame(playerId);
+    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, GameType gameType){
+        Reply reply = gameService.createNewGame(playerId, gameType);
         return new ResponseEntity<>(reply, HttpStatus.CREATED);
     }
 
