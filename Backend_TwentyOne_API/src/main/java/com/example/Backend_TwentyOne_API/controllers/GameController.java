@@ -100,7 +100,10 @@ public class GameController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else if(!player.isPresent()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } 
+        } else if(game.get().getComplete()){
+            Reply reply = gameService.gameAlreadyComplete(gameId);
+            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
             else if(game.get().getCurrentPlayerId() != playerId){
                 Reply reply = gameService.wrongPlayer(gameId, playerId);
                 return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);

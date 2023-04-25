@@ -323,4 +323,10 @@ Random random = new Random();
         String message = "Game " + game.getId() + " is not multiplayer. Cannot add players";
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
+
+    public Reply gameAlreadyComplete(Long gameId) {
+        Game game = getGameById(gameId).get();
+        String message = "Game " + game.getId() + " is finished. Cannot play anymore.";
+        return new Reply(game.getCurrentTotal(), game.getComplete(), message);
+    }
 }
