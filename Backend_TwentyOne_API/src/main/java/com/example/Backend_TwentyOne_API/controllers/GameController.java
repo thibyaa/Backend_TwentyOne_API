@@ -43,21 +43,43 @@ public class GameController {
         return new ResponseEntity<>(reply, HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{gameId}")
-    public ResponseEntity<Reply> startNewGame(@PathVariable Long gameId){
-                    // check if game started, check if game has player,
 
+    //
+    @PatchMapping(value = "/{gameId}")
+    public ResponseEntity<Reply> startNewGame(@PathVariable Long gameId) {
+
+        // Check game has not already started
+        // Check game if multiplayer has enough players, if fails a response
+        // if passes, than we'll just start the game
+        // check if game exists
         Optional<Game> game = gameService.getGameById(gameId);
-        if(game.isPresent() && game.get().getHasStarted()==false) {
-            Reply reply = gameService.startNewGame(gameId);
-            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
-        } else if (game.isPresent() && game.get().getHasStarted()==true){
+        if (!game.isPresent()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (game.get().getHasStarted()) {
             Reply reply = gameService.startGameAlreadyStarted(gameId);
             return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)
+                && game.get().getPlayers().size() < 2) {
+            Reply reply = gameService.startGameMultiplayerNotEnoughPlayers(gameId);
+            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            Reply reply = gameService.startNewGame(gameId);
+            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
         }
     }
+
+
+
+//        if(game.isPresent() && game.get().getHasStarted()==false) {
+//            Reply reply = gameService.startNewGame(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
+//        } else if (game.isPresent() && game.get().getHasStarted()==true){
+//            Reply reply = gameService.startGameAlreadyStarted(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+
 
     @PutMapping(value = "/{gameId}")
     public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,@RequestParam int guess){

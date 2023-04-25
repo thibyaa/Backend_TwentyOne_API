@@ -191,4 +191,13 @@ Random random = new Random();
         gameRepository.save(game);
         return game;
     }
+
+    public Reply startGameMultiplayerNotEnoughPlayers(Long gameId) {
+        Game game = getGameById(gameId).get();
+        String playerName = game.getLeadPlayer().getName();
+        return new Reply(
+                0,
+                false,
+                 "Only " + playerName + " has joined the game, not enough players to begin");
+    }
 }
