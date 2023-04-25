@@ -18,8 +18,8 @@ public class PlayerService {
     @Autowired
     PlayerRepository playerRepository;
 
-    @Autowired
-    GameService gameService;
+//    @Autowired
+//    GameService gameService;
 
     @Autowired
     GameRepository gameRepository;

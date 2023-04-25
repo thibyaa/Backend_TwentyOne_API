@@ -37,8 +37,6 @@ public class DataLoader implements ApplicationRunner {
         Game game1 = new Game(player1, GameType.EASY);
         gameRepository.save(game1);
         Game game2 = new Game(player2, GameType.DIFFICULT);
-        game2.setHasStarted(true);
-        game2.setCurrentTotal(15);
         gameRepository.save(game2);
 
     }

@@ -58,10 +58,15 @@ public class GameController {
         }
     }
 
-    @PatchMapping(value = "/{gameId}")
+    @PutMapping(value = "/{gameId}")
     public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,@RequestParam int guess){
-        Reply reply = gameService.processTurn(gameId,guess);
-        return new ResponseEntity<>(reply, HttpStatus.OK);
+        if( (guess < 4) && (guess >0)) {
+            Reply reply = gameService.processTurn(gameId, guess);
+            return new ResponseEntity<>(reply, HttpStatus.OK);
+        } else{
+            Reply reply = gameService.invalidGuess(gameId);
+            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 //

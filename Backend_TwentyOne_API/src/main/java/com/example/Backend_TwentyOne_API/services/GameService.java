@@ -108,6 +108,7 @@ Random random = new Random();
             computerTurn = computerTurnDifficult(game);
         }
         else { computerTurn = computerTurnEasy(game);}
+        gameRepository.save(game);
 
         if (game.getCurrentTotal()>20){
             return new Reply(game.getCurrentTotal(), true, "Game Over! You win :D");
@@ -142,5 +143,16 @@ Random random = new Random();
         int computerTurn = random.nextInt(1,4);
         game.incrementCurrentTotal(computerTurn);
         return computerTurn;
+    }
+
+    public Reply invalidGuess(Long gameId) {
+        Game game = getGameById(gameId).get();
+        int currentTotal = game.getCurrentTotal();
+        Boolean complete = game.getComplete();
+        return new Reply(
+                currentTotal,
+                complete,
+                "Invalid turn, please input either 1, 2, or 3"
+        );
     }
 }
