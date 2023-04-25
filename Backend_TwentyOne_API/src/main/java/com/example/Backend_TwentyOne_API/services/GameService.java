@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class GameService {
 
+
+Random random = new Random();
 
     @Autowired
     GameRepository gameRepository;
@@ -99,10 +102,45 @@ public class GameService {
         }
 
        // Computer guess
-        // Is the guess "easy" or "hard"? (ENUM)
+        // Is the guess "easy" or "hard"? (ENUM) DONE
+        int computerTurn;
+        if (game.getGameType().equals(GameType.DIFFICULT)){
+            computerTurn = computerTurnDifficult(game);
+        }
+        else { computerTurn = computerTurnEasy(game);}
+
+        if (game.getCurrentTotal()>20){
+            return new Reply(game.getCurrentTotal(), true, "Game Over! You win :D");
+        }
+        else {
+            return new Reply(game.getCurrentTotal(), false, "Computer played " + computerTurn + "! Your move...");
+        }
+
+    }
+
+
+
+
+
         // increment the total
         // Check if total is >20. If so , reply "You win! :) "
         // If not, return the current total to the player prompting next input
 
+
+    public int computerTurnDifficult(Game game) {
+        int computerTurn;
+        if (game.getCurrentTotal() % 4 != 0) {
+            computerTurn = 4 - game.getCurrentTotal() % 4;
+        } else {
+            computerTurn = random.nextInt(1, 4);
+        }
+        game.incrementCurrentTotal(computerTurn);
+        return computerTurn;
+    }
+
+    public int computerTurnEasy(Game game) {
+        int computerTurn = random.nextInt(1,4);
+        game.incrementCurrentTotal(computerTurn);
+        return computerTurn;
     }
 }

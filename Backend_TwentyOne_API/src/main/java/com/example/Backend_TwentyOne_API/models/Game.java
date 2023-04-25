@@ -121,4 +121,7 @@ public class Game {
     public void setGameType(GameType gameType) {
         this.gameType = gameType;
     }
+    public void incrementCurrentTotal(int increment){
+        this.currentTotal += increment;
+    }
 }
