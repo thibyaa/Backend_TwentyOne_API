@@ -143,12 +143,57 @@ Random random = new Random();
     }
 
 
+    public Reply processTurnMultiplayer(Long gameId, int guess) {
+
+        // find the correct game
+        Game game = gameRepository.findById(gameId).get();
+
+//        find list of player
+        List<Player> playerList = game.getPlayers();
+
+//        find current player
+        Long currentPlayerId = game.getCurrentPlayerId();
+        Player currentPlayer = playerService.getPlayerById(currentPlayerId).get();
 
 
 
-        // increment the total
-        // Check if total is >20. If so , reply "You win! :) "
-        // If not, return the current total to the player prompting next input
+        // Check if game has started
+        if(!game.getHasStarted()){
+            return new Reply(
+                    game.getCurrentTotal(),
+                    false,
+                    "game has not started"
+            );
+        }
+
+        // Check game is not already complete
+        if (game.getComplete()){
+            return new Reply(
+                    game.getCurrentTotal(),
+                    true,
+                    "game is already complete"
+            );
+        }
+
+        // increment total by user input
+        game.setCurrentTotal(game.getCurrentTotal()+ guess);
+        gameRepository.save(game);
+
+        // Check is below 21
+//        if not, change current to next player
+        if (game.getCurrentTotal()> 20) {
+            return new Reply(game.getCurrentTotal(), true, "Game Over! You lose :(");
+        }else {
+//            nextPlayerindex is currentPLayerIndex +1
+//            get nextPlayer from their index in player list
+            return new Reply(
+                    game.getCurrentTotal(),
+                    false,
+                    currentPlayerId + " played " + guess
+            );
+        }
+
+    }
 
 
     public int computerTurnDifficult(Game game) {
@@ -167,6 +212,21 @@ Random random = new Random();
         game.incrementCurrentTotal(computerTurn);
         return computerTurn;
     }
+
+    public Long idOfNextPlayerToGuess(List<Player> playerList, Long currentPlayerId){
+//        get player by playerId
+//        get index of player in list by currentPlayerId
+//        increment by 1, looping if needed
+//        find nextPlayer by index in list
+//        find nexPlayerId from this
+        Player currentPlayer = playerService.getPlayerById(currentPlayerId).get();
+        int currentPlayerIndex = playerList.indexOf(currentPlayer);
+        int nextPlayerIndex = (currentPlayerIndex + 1) % playerList.size();
+        Player nextPlayer = playerList.get(nextPlayerIndex);
+        Long nextPlayerId = nextPlayer.getId();
+        return nextPlayerId;
+    }
+
 
     public Reply invalidGuess(Long gameId) {
         Game game = getGameById(gameId).get();
@@ -198,6 +258,20 @@ Random random = new Random();
         return new Reply(
                 0,
                 false,
-                 "Only " + playerName + " has joined the game, not enough players to begin");
+                 "Only " + playerName + " has joined the game, not enough players to begin"
+        );
     }
+
+    public Reply wrongPlayer(Long gameId, Long playerId) {
+        Game game = getGameById(gameId).get();
+        Long currentPlayerId = game.getCurrentPlayerId();
+        int gameState = game.getCurrentTotal();
+        return new Reply(
+                gameState,
+                false,
+                "Not your turn, player " + currentPlayerId + " is next."
+        );
+    }
+
+
 }
