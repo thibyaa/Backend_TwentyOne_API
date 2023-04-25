@@ -53,6 +53,7 @@ Random random = new Random();
 
 //        start game
         game.setHasStarted(true);
+        gameRepository.save(game);
 
 //        flip coin to decide who starts
         int whoToStart = random.nextInt(0,2);
@@ -121,7 +122,9 @@ Random random = new Random();
 
         // Check is below 21
         if (game.getCurrentTotal()> 20){
-            return new Reply(game.getCurrentTotal(),true,"Game Over! You lose :(");
+            game.setComplete(true);
+            gameRepository.save(game);
+            return new Reply(game.getCurrentTotal(),game.getComplete(),"Game Over! You lose :(");
         }
 
         // Computer guess
@@ -134,7 +137,9 @@ Random random = new Random();
         gameRepository.save(game);
 
         if (game.getCurrentTotal()>20){
-            return new Reply(game.getCurrentTotal(), true, "Game Over! You win :D");
+            game.setComplete(true);
+            gameRepository.save(game);
+            return new Reply(game.getCurrentTotal(), game.getComplete(), "Game Over! You win :D");
         }
         else {
             return new Reply(game.getCurrentTotal(), false, "Computer played " + computerTurn + "! Your move...");
@@ -182,9 +187,11 @@ Random random = new Random();
         // Check is below 21
 //        if not, change current to next player
         if (game.getCurrentTotal()> 20) {
+            game.setComplete(true);
+            gameRepository.save(game);
             return new Reply(
                     game.getCurrentTotal(),
-                    true,
+                    game.getComplete(),
                     "Game Over! Player " + game.getCurrentPlayerId() + ", " + playerService.getPlayerNameById(game.getCurrentPlayerId())  +" loses :(");
         }else {
 //    increment player turn to the person
@@ -285,18 +292,18 @@ Random random = new Random();
 
 //        start game
         game.setHasStarted(true);
+        gameRepository.save(game);
 
 //        flip coin to decide who starts
         int whoToStart = random.nextInt(0,game.getPlayers().size());
         Player player = game.getPlayers().get(whoToStart);
         Long firstPlayerId = player.getId();
         game.setCurrentPlayerId(firstPlayerId);
+        gameRepository.save(game);
         String firstPlayerName = player.getName();
 
 //       identify starting player and personalise message
         String message = "Player " + firstPlayerId + ", " + firstPlayerName + ", to start!";
-
-        gameRepository.save(game);
 
         return new Reply(
                 game.getCurrentTotal(),
