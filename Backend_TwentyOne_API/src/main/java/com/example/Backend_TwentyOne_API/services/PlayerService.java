@@ -41,4 +41,9 @@ public class PlayerService {
         return player;
     }
 
+    public String getPlayerNameById(Long playerId){
+        Player player = getPlayerById(playerId).get();
+        return player.getName();
+    }
+
 }

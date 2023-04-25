@@ -182,15 +182,19 @@ Random random = new Random();
         // Check is below 21
 //        if not, change current to next player
         if (game.getCurrentTotal()> 20) {
-            return new Reply(game.getCurrentTotal(), true, "Game Over! You lose :(");
+            return new Reply(
+                    game.getCurrentTotal(),
+                    true,
+                    "Game Over! Player " + game.getCurrentPlayerId() + ", " + playerService.getPlayerNameById(game.getCurrentPlayerId())  +" loses :(");
         }else {
 //    increment player turn to the person
 
             Long nextPlayerId = idOfNextPlayerToGuess(playerList, currentPlayerId);
             game.setCurrentPlayerId(nextPlayerId);
             gameRepository.save(game);
-            return new Reply(game.getCurrentTotal(), false,
-                    "It is " + currentPlayerId + "'s turn");
+            return new Reply(game.getCurrentTotal(),
+                    false,
+                    "It is player " + game.getCurrentPlayerId() + "'s turn");
 
         }
     }
