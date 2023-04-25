@@ -124,7 +124,7 @@ public class GameController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else if (!player.isPresent()) {
             return  new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else if (game.get().getPlayers().contains(player)) {
+        } else if (game.get().getPlayers().contains(player.get())) {
             Reply reply = gameService.addPlayerToGameAlreadyContains(gameId, playerId);
             return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
         } else if (game.get().getHasStarted()) {
