@@ -48,10 +48,11 @@ public class GameController {
     @PatchMapping(value = "/{gameId}")
     public ResponseEntity<Reply> startNewGame(@PathVariable Long gameId) {
 
+        // check if game exists
         // Check game has not already started
         // Check game if multiplayer has enough players, if fails a response
         // if passes, than we'll just start the game
-        // check if game exists
+
         Optional<Game> game = gameService.getGameById(gameId);
         if (!game.isPresent()) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -68,17 +69,6 @@ public class GameController {
         }
     }
 
-
-
-//        if(game.isPresent() && game.get().getHasStarted()==false) {
-//            Reply reply = gameService.startNewGame(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
-//        } else if (game.isPresent() && game.get().getHasStarted()==true){
-//            Reply reply = gameService.startGameAlreadyStarted(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-//        } else {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        }
 
 
     @PutMapping(value = "/{gameId}")
