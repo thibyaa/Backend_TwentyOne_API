@@ -48,13 +48,37 @@ Random random = new Random();
     }
 
     public Reply startNewGame(Long gameId) {
+//        get game by id
         Game game = getGameById(gameId).get();
+
+//        start game
         game.setHasStarted(true);
+
+//        flip coin to decide who starts
+        int whoToStart = random.nextInt(0,2);
+
+        String message;
+
+//        if computer to start
+        if (whoToStart == 0) {
+            int computerTurn;
+            if (game.getGameType().equals(GameType.DIFFICULT)){
+                computerTurn = computerTurnDifficult(game);
+            } else { computerTurn = computerTurnEasy(game);}
+            message = "Computer starts. Computer plays " + computerTurn + ". Your turn!";
+        }
+
+//        if player to start
+        else{
+            message = playerService.getPlayerById(game.getCurrentPlayerId()).get().getName() + " to start. Your turn.";
+        }
+
         gameRepository.save(game);
+
         return new Reply(
-                0,
+                game.getCurrentTotal(),
                 false,
-                "Game with id " + game.getId() + " has started"
+                message
         );
     }
 
