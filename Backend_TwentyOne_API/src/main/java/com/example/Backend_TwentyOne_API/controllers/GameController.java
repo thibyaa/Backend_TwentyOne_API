@@ -118,6 +118,8 @@ public class GameController {
         // Check the player exists
         // Check the players not in the game
         // Check the game hasn't started
+        // Check if game is not multiplayer
+
         Optional <Game> game = gameService.getGameById(gameId);
         Optional <Player> player = playerService.getPlayerById(playerId);
         if (!game.isPresent()){
@@ -130,7 +132,11 @@ public class GameController {
         } else if (game.get().getHasStarted()) {
               Reply reply = gameService.addPlayerToGameAlreadyStarted(gameId);
               return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else {
+        } else if(!game.get().getGameType().equals(GameType.MULTIPLAYER)){
+            Reply reply = gameService.addPlayerToWrongGameType(gameId);
+            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
+        else {
             Reply reply = gameService.addPlayerToGame(playerId, gameId);
             return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
         }
