@@ -32,4 +32,7 @@ public class PlayerService {
         return playerRepository.findById(playerId);
     }
 
+    public String getPlayerNameByGame(Game game) {
+        return getPlayerById(game.getCurrentPlayerId()).get().getName();
+    }
 }

@@ -70,9 +70,8 @@ Random random = new Random();
 
 //        if player to start
         else{
-            message = playerService.getPlayerById(game.getCurrentPlayerId()).get().getName() + " to start. Your turn.";
+            message = playerService.getPlayerNameByGame(game) + " to start. Your turn.";
         }
-
         gameRepository.save(game);
 
         return new Reply(
@@ -116,7 +115,7 @@ Random random = new Random();
             );
         }
 
-        // increment total
+        // increment total by user input
         game.setCurrentTotal(game.getCurrentTotal()+ guess);
         gameRepository.save(game);
 
@@ -125,7 +124,7 @@ Random random = new Random();
             return new Reply(game.getCurrentTotal(),true,"Game Over! You lose :(");
         }
 
-       // Computer guess
+        // Computer guess
         // Is the guess "easy" or "hard"? (ENUM) DONE
         int computerTurn;
         if (game.getGameType().equals(GameType.DIFFICULT)){
