@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import static jdk.jpackage.internal.MacDmgBundler.required;
 
 @RestController
 @RequestMapping(value = "/games")
@@ -79,17 +78,16 @@ public class GameController {
 
     @PutMapping(value = "/{gameId}")
     public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,
-                                             @RequestParam(required = false) Long playerId,
+                                             @RequestParam Long playerId,
                                              @RequestParam int guess){
 
 //        get game by gameId
-//        if multiplayer
 //        get player by playerId
 //        check player who submits guess is player whose turn it is
 //        check guess is 1,2,or 3
 //        then processTurnMultiplayer(gameId, guess)
+//        otherwise processTurnSinglePlayer(gameId, guess)
         Game game = gameService.getGameById(gameId).get();
-        if(game.getGameType().equals(GameType.MULTIPLAYER)){
             Player player = playerService.getPlayerById(playerId).get();
             if(game.getCurrentPlayerId() != playerId){
                 Reply reply = gameService.wrongPlayer(gameId, playerId);
@@ -97,23 +95,13 @@ public class GameController {
             }else if(!((guess < 4) && (guess >0))){
                 Reply reply = gameService.invalidGuess(gameId);
                 return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-            }else{
+            }
+            else if (game.getGameType().equals(GameType.MULTIPLAYER)) {
                 Reply reply = gameService.processTurnMultiplayer(gameId, guess);
                 return new ResponseEntity<>(reply, HttpStatus.OK);
             }
-        }
-//        else if not multiplayer
-//        check guess is 1,2,or 3
-//        then processTurn(gameId, guess)
-        else {
-            if ((guess < 4) && (guess > 0)) {
-                Reply reply = gameService.processTurn(gameId, guess);
-                return new ResponseEntity<>(reply, HttpStatus.OK);
-            } else {
-                Reply reply = gameService.invalidGuess(gameId);
-                return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-            }
-        }
+            else {Reply reply = gameService.processTurn(gameId, guess);
+            return new ResponseEntity<>(reply, HttpStatus.OK);}
     }
 
     @PostMapping( value = "/{gameId}")

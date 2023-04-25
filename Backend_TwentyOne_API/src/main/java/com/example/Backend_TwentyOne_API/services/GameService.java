@@ -184,15 +184,15 @@ Random random = new Random();
         if (game.getCurrentTotal()> 20) {
             return new Reply(game.getCurrentTotal(), true, "Game Over! You lose :(");
         }else {
-//            nextPlayerindex is currentPLayerIndex +1
-//            get nextPlayer from their index in player list
-            return new Reply(
-                    game.getCurrentTotal(),
-                    false,
-                    currentPlayerId + " played " + guess
-            );
-        }
+//    increment player turn to the person
 
+            Long nextPlayerId = idOfNextPlayerToGuess(playerList, currentPlayerId);
+            game.setCurrentPlayerId(nextPlayerId);
+            gameRepository.save(game);
+            return new Reply(game.getCurrentTotal(), false,
+                    "It is " + currentPlayerId + "'s turn");
+
+        }
     }
 
 
