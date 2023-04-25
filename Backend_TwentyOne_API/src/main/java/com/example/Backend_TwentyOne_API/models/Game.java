@@ -124,4 +124,8 @@ public class Game {
     public void incrementCurrentTotal(int increment){
         this.currentTotal += increment;
     }
+
+    public void addPlayer(Player player){
+        this.players.add(player);
+    }
 }

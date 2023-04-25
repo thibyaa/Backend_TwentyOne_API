@@ -35,4 +35,10 @@ public class PlayerService {
     public String getPlayerNameByGame(Game game) {
         return getPlayerById(game.getCurrentPlayerId()).get().getName();
     }
+
+    public Player savePlayer(Player player) {
+        playerRepository.save(player);
+        return player;
+    }
+
 }

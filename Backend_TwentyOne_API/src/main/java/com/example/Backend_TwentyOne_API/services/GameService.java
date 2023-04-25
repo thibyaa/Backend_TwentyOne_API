@@ -178,4 +178,17 @@ Random random = new Random();
                 "Invalid turn, please input either 1, 2, or 3"
         );
     }
+
+    public Game addPlayerToGame(Long playerId, Long gameId) {
+//        first get the actual player by the playerId
+//        then, get the game by the gameId
+//        add players to the array list and to the games array list
+//        save, then return the game
+
+        Player player = playerService.getPlayerById(playerId).get();
+        Game game = getGameById(gameId).get();
+        game.addPlayer(player);
+        gameRepository.save(game);
+        return game;
+    }
 }

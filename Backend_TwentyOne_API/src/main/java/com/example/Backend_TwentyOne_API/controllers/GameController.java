@@ -2,6 +2,7 @@ package com.example.Backend_TwentyOne_API.controllers;
 
 import com.example.Backend_TwentyOne_API.models.Game;
 import com.example.Backend_TwentyOne_API.models.GameType;
+import com.example.Backend_TwentyOne_API.models.Player;
 import com.example.Backend_TwentyOne_API.models.Reply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,12 @@ public class GameController {
             Reply reply = gameService.invalidGuess(gameId);
             return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @PostMapping( value = "/{gameId}")
+    public ResponseEntity<Game> addPlayerToGame(@PathVariable Long gameId, @RequestParam Long playerId){
+        Game savedGame = gameService.addPlayerToGame(playerId, gameId);
+        return new ResponseEntity<>(savedGame, HttpStatus.ACCEPTED);
     }
 
 //
