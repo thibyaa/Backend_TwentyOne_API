@@ -4,6 +4,7 @@ import com.example.Backend_TwentyOne_API.models.Game;
 import com.example.Backend_TwentyOne_API.models.GameType;
 import com.example.Backend_TwentyOne_API.models.Player;
 import com.example.Backend_TwentyOne_API.models.Reply;
+import com.example.Backend_TwentyOne_API.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static jdk.jpackage.internal.MacDmgBundler.required;
+
 @RestController
 @RequestMapping(value = "/games")
 public class GameController {
 
     @Autowired
     GameService gameService;
+
+    @Autowired
+    PlayerService playerService;
 
     @GetMapping
     public ResponseEntity<List<Game>>  getAllGames(){
@@ -72,13 +78,41 @@ public class GameController {
 
 
     @PutMapping(value = "/{gameId}")
-    public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,@RequestParam int guess){
-        if( (guess < 4) && (guess >0)) {
-            Reply reply = gameService.processTurn(gameId, guess);
-            return new ResponseEntity<>(reply, HttpStatus.OK);
-        } else{
-            Reply reply = gameService.invalidGuess(gameId);
-            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,
+                                             @RequestParam(required = false) Long playerId,
+                                             @RequestParam int guess){
+
+//        get game by gameId
+//        if multiplayer
+//        get player by playerId
+//        check player who submits guess is player whose turn it is
+//        check guess is 1,2,or 3
+//        then processTurnMultiplayer(gameId, guess)
+        Game game = gameService.getGameById(gameId).get();
+        if(game.getGameType().equals(GameType.MULTIPLAYER)){
+            Player player = playerService.getPlayerById(playerId).get();
+            if(game.getCurrentPlayerId() != playerId){
+                Reply reply = gameService.wrongPlayer(gameId, playerId);
+                return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+            }else if(!((guess < 4) && (guess >0))){
+                Reply reply = gameService.invalidGuess(gameId);
+                return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+            }else{
+                Reply reply = gameService.processTurnMultiplayer(gameId, guess);
+                return new ResponseEntity<>(reply, HttpStatus.OK);
+            }
+        }
+//        else if not multiplayer
+//        check guess is 1,2,or 3
+//        then processTurn(gameId, guess)
+        else {
+            if ((guess < 4) && (guess > 0)) {
+                Reply reply = gameService.processTurn(gameId, guess);
+                return new ResponseEntity<>(reply, HttpStatus.OK);
+            } else {
+                Reply reply = gameService.invalidGuess(gameId);
+                return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+            }
         }
     }
 
