@@ -48,4 +48,18 @@ public class PlayerController {
         return new ResponseEntity<>(savedPlayer, HttpStatus.CREATED);
     }
 
+    //  Delete player by specifying player id
+    //  Create deletePlayer method inside PlayerService class
+    //  Create if loop to check if player has been deleted successfully or not
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePlayer(@PathVariable("id") Long id) {
+        boolean deleted = playerService.deletePlayer(id);
+        if (deleted) {
+            return new ResponseEntity<>("Player deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Player not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }

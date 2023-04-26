@@ -176,6 +176,21 @@ public class GameController {
     }
 
 
+//  Delete game by specifying game id
+//  Create deleteGame method inside GameService class
+//  Create if loop to check if game has been deleted successfully or not
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGame(@PathVariable("id") Long id) {
+        boolean deleted = gameService.deleteGame(id);
+        if (deleted) {
+            return new ResponseEntity<>("Game deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Game not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 
 //
 }

@@ -347,4 +347,15 @@ Random random = new Random();
         String message = "Game " + game.getId() + " is finished. Cannot play anymore.";
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
+
+    public boolean deleteGame(long gameId) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if (game.isPresent()) {
+            gameRepository.deleteById(gameId);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

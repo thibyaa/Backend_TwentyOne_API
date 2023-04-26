@@ -69,6 +69,16 @@ public class PlayerService {
         return loserBoardPlayerList;
     }
 
+    public boolean deletePlayer(Long playerId) {
+        Optional<Game> game = gameRepository.findById(playerId);
+        if (game.isPresent()) {
+            gameRepository.deleteById(playerId);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 //    public List<Player> getLoserBoard(){
 //        return playerRepository.findAll(Sort.by(Sort.Direction.DESC, "gamesLost"));
 //    }
