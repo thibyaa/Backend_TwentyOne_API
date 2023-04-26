@@ -44,31 +44,37 @@ public class GameController {
 
 
     @PostMapping
-    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam String gameType){
+    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam String gameType) {
+
+        ResponseEntity<Reply> responseEntity;
+        responseEntity = gameService.createNewGame(playerId, gameType);
+        return responseEntity;
+    }
+
 //        check player exists before creating game
 //        else create game depending on gameType
-        Optional<Player> player = playerService.getPlayerById(playerId);
-        if(!player.isPresent()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        else {
-            if (gameType.equalsIgnoreCase("Easy")) {
-                GameType newGameType = GameType.EASY;
-                Reply reply = gameService.createNewGame(playerId, newGameType);
-                return new ResponseEntity<>(reply, HttpStatus.CREATED);
-            } else if (gameType.equalsIgnoreCase("difficult")) {
-                GameType newGameType = GameType.DIFFICULT;
-                Reply reply = gameService.createNewGame(playerId, newGameType);
-                return new ResponseEntity<>(reply, HttpStatus.CREATED);
-            } else if (gameType.equalsIgnoreCase("multiplayer")) {
-                GameType newGameType = GameType.MULTIPLAYER;
-                Reply reply = gameService.createNewGame(playerId, newGameType);
-                return new ResponseEntity<>(reply, HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }
-        }
-    }
+//        Optional<Player> player = playerService.getPlayerById(playerId);
+//        if(!player.isPresent()){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//        else {
+//            if (gameType.equalsIgnoreCase("Easy")) {
+//                GameType newGameType = GameType.EASY;
+//                Reply reply = gameService.createNewGame(playerId, newGameType);
+//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//            } else if (gameType.equalsIgnoreCase("difficult")) {
+//                GameType newGameType = GameType.DIFFICULT;
+//                Reply reply = gameService.createNewGame(playerId, newGameType);
+//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//            } else if (gameType.equalsIgnoreCase("multiplayer")) {
+//                GameType newGameType = GameType.MULTIPLAYER;
+//                Reply reply = gameService.createNewGame(playerId, newGameType);
+//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//            } else {
+//                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//            }
+//        }
+
 
 
     @PostMapping( value = "/{gameId}")

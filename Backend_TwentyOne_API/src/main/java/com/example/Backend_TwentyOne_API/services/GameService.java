@@ -7,6 +7,8 @@ import com.example.Backend_TwentyOne_API.models.Reply;
 import com.example.Backend_TwentyOne_API.repositories.GameRepository;
 import com.example.Backend_TwentyOne_API.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,16 +42,70 @@ Random random = new Random();
     }
 
 
-    public Reply createNewGame(long playerId, GameType gameType) {
-        Player player = playerService.getPlayerById(playerId).get();
-        Game game = new Game(player, gameType);
-        gameRepository.save(game);
-        return new Reply(
-                0,
-                false,
-                "Create new game with id " + game.getId() + " with lead player " + player.getName()
-        );
+    public ResponseEntity<Reply> createNewGame(long playerId, String gameType) {
+//        Get player by playerId
+//        Check if player exists
+//        Check if gameType is valid
+//        If passes, create new game
+
+        Optional<Player> player = playerService.getPlayerById(playerId);
+        if(!player.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        if (gameType.equalsIgnoreCase("Easy")) {
+                GameType newGameType = GameType.EASY;
+                Game game = new Game(player.get(), newGameType);
+                Reply reply = new Reply(0,
+                        false,
+                        "Create new game with id " + game.getId() + " with lead player " + player.get().getName());
+                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+
+            } else if (gameType.equalsIgnoreCase("difficult")) {
+                GameType newGameType = GameType.DIFFICULT;
+                Game game = new Game(player.get(), newGameType);
+                Reply reply = new Reply(0,
+                    false,
+                    "Create new game with id " + game.getId() + " with lead player " + player.get().getName());
+                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+
+            } else if (gameType.equalsIgnoreCase("multiplayer")) {
+                GameType newGameType = GameType.MULTIPLAYER;
+                Game game = new Game(player.get(), newGameType);
+                Reply reply = new Reply(0,
+                    false,
+                    "Create new game with id " + game.getId() + " with lead player " + player.get().getName());
+                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+
+            } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
+//        check player exists before creating game
+//        else create game depending on gameType
+//        Optional<Player> player = playerService.getPlayerById(playerId);
+//        if(!player.isPresent()){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//        else {
+//            if (gameType.equalsIgnoreCase("Easy")) {
+//                GameType newGameType = GameType.EASY;
+//                Reply reply = gameService.createNewGame(playerId, newGameType);
+//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//            } else if (gameType.equalsIgnoreCase("difficult")) {
+//                GameType newGameType = GameType.DIFFICULT;
+//                Reply reply = gameService.createNewGame(playerId, newGameType);
+//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//            } else if (gameType.equalsIgnoreCase("multiplayer")) {
+//                GameType newGameType = GameType.MULTIPLAYER;
+//                Reply reply = gameService.createNewGame(playerId, newGameType);
+//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//            } else {
+//                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//            }
+//        }
+
 
     public Reply startNewGame(Long gameId) {
 //        get game by id
