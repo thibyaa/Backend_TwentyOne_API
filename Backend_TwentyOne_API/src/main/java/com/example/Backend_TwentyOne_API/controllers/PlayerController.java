@@ -23,12 +23,14 @@ public class PlayerController {
         List<Player> players = playerService.getAllPlayers();
         return new ResponseEntity<>(players, HttpStatus.OK);
     }
+//
+//    @GetMapping(value = "/loserBoard")
+//    public ResponseEntity<List<Player>> getLoserBoard(){
+//        List<Player> players = playerService.getLoserBoard();
+//        return new ResponseEntity<>(players, HttpStatus.OK);
+//    }
 
-    @GetMapping(value = "/loserBoard")
-    public ResponseEntity<List<Player>> getLoserBoard(){
-        List<Player> players = playerService.getLoserBoard();
-        return new ResponseEntity<>(players, HttpStatus.OK);
-    }
+
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Player> getPlayerById(@PathVariable Long id){

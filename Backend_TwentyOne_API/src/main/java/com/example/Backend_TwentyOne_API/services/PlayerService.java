@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,8 +49,24 @@ public class PlayerService {
         return player.getName();
     }
 
+    // getAllPlayers
+    // loopThrough list of players - for each one create DTO, which
+    // name, loserboard playerslost
+    // adds dto to a list, preset a list
+    // return list ordered by gamesLost
+
     public List<LoserBoardPlayer> getLoserBoard() {
-        return playerRepository.getLoserBoard();
+        List<Player> playerList = playerRepository.findAll(Sort.by(Sort.Direction.DESC, "gamesLost"));
+        List<LoserBoardPlayer> loserBoardPlayerList = new ArrayList<>();
+        for(Player player : playerList){
+            LoserBoardPlayer loserBoardPlayer = new LoserBoardPlayer(
+                    player.getName(),
+                    player.getId(),
+                    player.getGamesLost()
+            );
+            loserBoardPlayerList.add(loserBoardPlayer);
+        }
+        return loserBoardPlayerList;
     }
 
 //    public List<Player> getLoserBoard(){
