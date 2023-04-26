@@ -47,7 +47,7 @@ public class PlayerService {
     }
 
     public List<Player> getLoserBoard() {
-        return playerRepository.findByGamesLostIgnoreGames();
+        return playerRepository.getLoserBoard();
     }
 
 }
