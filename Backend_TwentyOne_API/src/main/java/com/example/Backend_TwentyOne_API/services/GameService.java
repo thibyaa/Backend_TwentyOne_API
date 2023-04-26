@@ -198,6 +198,8 @@ Random random = new Random();
         if (game.getCurrentTotal()> 20) {
             game.setComplete(true);
             gameRepository.save(game);
+            currentPlayer.setGamesLost(currentPlayer.getGamesLost()+1);
+            playerRepository.save(currentPlayer);
             return new Reply(
                     game.getCurrentTotal(),
                     game.getComplete(),
