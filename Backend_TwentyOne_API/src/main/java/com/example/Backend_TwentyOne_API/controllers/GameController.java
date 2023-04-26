@@ -42,11 +42,6 @@ public class GameController {
         }
     }
 
-//    @PostMapping
-//    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam(name = "gameType") GameType gameType){
-//        Reply reply = gameService.createNewGame(playerId, gameType);
-//        return new ResponseEntity<>(reply, HttpStatus.CREATED);
-//    }
 
     @PostMapping
     public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam String gameType){
@@ -72,6 +67,85 @@ public class GameController {
             } else {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             }
+        }
+    }
+
+
+    @PostMapping( value = "/{gameId}")
+    public ResponseEntity<Reply> addPlayerToGame(@PathVariable Long gameId, @RequestParam Long playerId) {
+        // Get the game by the GameId,
+        // get player by playerId,
+        // Check the game exists
+        // Check the player exists
+        // Check the players not already in the game
+        // Check the game hasn't started
+        // Check if game is not multiplayer
+
+        Optional <Game> game = gameService.getGameById(gameId);
+        Optional <Player> player = playerService.getPlayerById(playerId);
+        if (!game.isPresent()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (!player.isPresent()) {
+            return  new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (game.get().getPlayers().contains(player.get())) {
+            Reply reply = gameService.addPlayerToGameAlreadyContains(gameId, playerId);
+            return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else if (game.get().getHasStarted()) {
+            Reply reply = gameService.addPlayerToGameAlreadyStarted(gameId);
+            return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else if(!game.get().getGameType().equals(GameType.MULTIPLAYER)){
+            Reply reply = gameService.addPlayerToWrongGameType(gameId);
+            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
+        else {
+            Reply reply = gameService.addPlayerToGame(playerId, gameId);
+            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
+        }
+
+
+    }
+
+
+    @DeleteMapping("/{gameId}/{playerId}")
+    public ResponseEntity<String> removePlayerFromGame(@PathVariable("gameId") Long gameId, @PathVariable("playerId") Long playerId){
+        Optional<Player> player = playerService.getPlayerById(playerId);
+        Optional<Game> game = gameService.getGameById(gameId);
+        Player leadPlayer;
+        if(!game.isPresent()){
+            return new ResponseEntity<>("Game not found",HttpStatus.NOT_FOUND);
+        } else{
+            leadPlayer = game.get().getLeadPlayer();
+        }
+
+        if(!player.isPresent()){
+            return new ResponseEntity<>("Player not found",HttpStatus.NOT_FOUND);
+        } else if (game.get().getHasStarted()) {
+            return new ResponseEntity<>("Player cannot be removed from game that has already begun!", HttpStatus.NOT_ACCEPTABLE);
+        } else if (!game.get().getPlayers().contains(player.get())){
+            return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
+        } else if (player.get().equals(leadPlayer)){
+            return new ResponseEntity<>("Lead player cannot be removed from game",HttpStatus.NOT_ACCEPTABLE);
+        } else{
+            gameService.removePlayerFromGame(gameId, playerId);
+            return new ResponseEntity<>("Player successfully removed from game",HttpStatus.OK);
+        }
+    }
+
+
+//  Delete game by specifying game id
+//  Create deleteGame method inside GameService class
+//  Create if loop to check if game has been deleted successfully or not
+
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGame(@PathVariable("id") Long id) {
+        Optional<Game> game = gameService.getGameById(id);
+        if (!game.isPresent()) {
+            return new ResponseEntity<>("Game not found",HttpStatus.NOT_FOUND);
+        } else {
+            gameService.deleteGame(id);
+            return new ResponseEntity<>("Game deleted", HttpStatus.OK);
         }
     }
 
@@ -146,84 +220,6 @@ public class GameController {
     }
 
     // Check
-
-
-    @PostMapping( value = "/{gameId}")
-    public ResponseEntity<Reply> addPlayerToGame(@PathVariable Long gameId, @RequestParam Long playerId) {
-        // Get the game by the GameId,
-        // get player by playerId,
-        // Check the game exists
-        // Check the player exists
-        // Check the players not already in the game
-        // Check the game hasn't started
-        // Check if game is not multiplayer
-
-        Optional <Game> game = gameService.getGameById(gameId);
-        Optional <Player> player = playerService.getPlayerById(playerId);
-        if (!game.isPresent()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else if (!player.isPresent()) {
-            return  new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else if (game.get().getPlayers().contains(player.get())) {
-            Reply reply = gameService.addPlayerToGameAlreadyContains(gameId, playerId);
-            return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else if (game.get().getHasStarted()) {
-              Reply reply = gameService.addPlayerToGameAlreadyStarted(gameId);
-              return  new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else if(!game.get().getGameType().equals(GameType.MULTIPLAYER)){
-            Reply reply = gameService.addPlayerToWrongGameType(gameId);
-            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        }
-        else {
-            Reply reply = gameService.addPlayerToGame(playerId, gameId);
-            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
-        }
-
-
-    }
-
-
-//  Delete game by specifying game id
-//  Create deleteGame method inside GameService class
-//  Create if loop to check if game has been deleted successfully or not
-
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteGame(@PathVariable("id") Long id) {
-       Optional<Game> game = gameService.getGameById(id);
-        if (!game.isPresent()) {
-            return new ResponseEntity<>("Game not found",HttpStatus.NOT_FOUND);
-        } else {
-            gameService.deleteGame(id);
-            return new ResponseEntity<>("Game deleted", HttpStatus.OK);
-        }
-    }
-
-    @DeleteMapping("/{gameId}/{playerId}")
-    public ResponseEntity<String> removePlayerFromGame(@PathVariable("gameId") Long gameId, @PathVariable("playerId") Long playerId){
-        Optional<Player> player = playerService.getPlayerById(playerId);
-        Optional<Game> game = gameService.getGameById(gameId);
-        Player leadPlayer;
-        if(!game.isPresent()){
-            return new ResponseEntity<>("Game not found",HttpStatus.NOT_FOUND);
-        } else{
-            leadPlayer = game.get().getLeadPlayer();
-        }
-
-        if(!player.isPresent()){
-            return new ResponseEntity<>("Player not found",HttpStatus.NOT_FOUND);
-        } else if (game.get().getHasStarted()) {
-            return new ResponseEntity<>("Player cannot be removed from game that has already begun!", HttpStatus.NOT_ACCEPTABLE);
-        } else if (!game.get().getPlayers().contains(player.get())){
-            return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
-        } else if (player.get().equals(leadPlayer)){
-            return new ResponseEntity<>("Lead player cannot be removed from game",HttpStatus.NOT_ACCEPTABLE);
-        } else{
-            gameService.removePlayerFromGame(gameId, playerId);
-            return new ResponseEntity<>("Player successfully removed from game",HttpStatus.OK);
-        }
-    }
 
 
 //
