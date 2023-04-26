@@ -42,10 +42,29 @@ public class GameController {
         }
     }
 
+//    @PostMapping
+//    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam(name = "gameType") GameType gameType){
+//        Reply reply = gameService.createNewGame(playerId, gameType);
+//        return new ResponseEntity<>(reply, HttpStatus.CREATED);
+//    }
+
     @PostMapping
-    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, GameType gameType){
-        Reply reply = gameService.createNewGame(playerId, gameType);
-        return new ResponseEntity<>(reply, HttpStatus.CREATED);
+    public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam String gameType){
+        if (gameType.equalsIgnoreCase("Easy")){
+            GameType newGameType = GameType.EASY;
+            Reply reply = gameService.createNewGame(playerId, newGameType);
+            return new ResponseEntity<>(reply, HttpStatus.CREATED);
+        }else if (gameType.equalsIgnoreCase("difficult")){
+            GameType newGameType = GameType.DIFFICULT;
+            Reply reply = gameService.createNewGame(playerId, newGameType);
+            return new ResponseEntity<>(reply, HttpStatus.CREATED);
+        }else if (gameType.equalsIgnoreCase("multiplayer")){
+            GameType newGameType = GameType.MULTIPLAYER;
+            Reply reply = gameService.createNewGame(playerId, newGameType);
+            return new ResponseEntity<>(reply, HttpStatus.CREATED);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
 
