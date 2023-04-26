@@ -21,6 +21,7 @@ public class Player {
 
     @JsonIgnoreProperties({"players"})
     @ManyToMany(mappedBy = "players")
+//    @Transient
     private List<Game> games;
 
     public Player(String name){

@@ -1,11 +1,13 @@
 package com.example.Backend_TwentyOne_API.services;
 
 import com.example.Backend_TwentyOne_API.models.Game;
+import com.example.Backend_TwentyOne_API.models.LoserBoardPlayer;
 import com.example.Backend_TwentyOne_API.models.Player;
 import com.example.Backend_TwentyOne_API.models.Reply;
 import com.example.Backend_TwentyOne_API.repositories.GameRepository;
 import com.example.Backend_TwentyOne_API.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,8 +48,12 @@ public class PlayerService {
         return player.getName();
     }
 
-    public List<Player> getLoserBoard() {
+    public List<LoserBoardPlayer> getLoserBoard() {
         return playerRepository.getLoserBoard();
     }
+
+//    public List<Player> getLoserBoard(){
+//        return playerRepository.findAll(Sort.by(Sort.Direction.DESC, "gamesLost"));
+//    }
 
 }
