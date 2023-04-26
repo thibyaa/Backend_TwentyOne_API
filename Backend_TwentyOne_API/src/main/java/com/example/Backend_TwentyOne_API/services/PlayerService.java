@@ -69,16 +69,24 @@ public class PlayerService {
         return loserBoardPlayerList;
     }
 
-    public boolean deletePlayer(Long playerId) {
-        Optional<Game> game = gameRepository.findById(playerId);
-        if (game.isPresent()) {
-            gameRepository.deleteById(playerId);
-            return true;
-        } else {
-            return false;
-        }
+//    public boolean deletePlayer(Long playerId) {
+//        Optional<Game> game = gameRepository.findById(playerId);
+//        if (game.isPresent()) {
+//            gameRepository.deleteById(playerId);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
+    public void deletePlayer(long playerId) {
+    Player player = playerRepository.findById(playerId).get();
+    List<Game> gameList = player.getGames();
+    for(Game game : gameList){
+        game.removePlayer(player);
+        gameRepository.save(game);
     }
-
+    playerRepository.deleteById(playerId);
+}
 //    public List<Player> getLoserBoard(){
 //        return playerRepository.findAll(Sort.by(Sort.Direction.DESC, "gamesLost"));
 //    }
