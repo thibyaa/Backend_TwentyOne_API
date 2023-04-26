@@ -83,7 +83,11 @@ public class PlayerService {
     List<Game> gameList = player.getGames();
     for(Game game : gameList){
         game.removePlayer(player);
-        gameRepository.save(game);
+        //if no more players, delete game
+        if (game.getPlayers().size()==0){
+            gameRepository.delete(game);
+        }
+        else { gameRepository.save(game);}
     }
     playerRepository.deleteById(playerId);
 }
