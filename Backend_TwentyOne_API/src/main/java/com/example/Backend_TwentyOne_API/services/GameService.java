@@ -49,24 +49,23 @@ Random random = new Random();
 //        If passes, create new game
 
         Optional<Player> player = playerService.getPlayerById(playerId);
+        ResponseEntity<Reply> responseEntity;
         if(!player.isPresent()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+             responseEntity = new ResponseEntity(null, HttpStatus.NOT_FOUND);
         }
-        ResponseEntity responseEntity;
-        if (gameType.equalsIgnoreCase("Easy")) {
-                GameType newGameType = GameType.EASY;
-                 responseEntity = createGameByType(newGameType, player);
-            } else if (gameType.equalsIgnoreCase("difficult")) {
-                GameType newGameType = GameType.DIFFICULT;
-                 responseEntity = createGameByType(newGameType, player);
+        else if (gameType.equalsIgnoreCase("Easy")) {
+            GameType newGameType = GameType.EASY;
+            responseEntity = createGameByType(newGameType, player);
+        } else if (gameType.equalsIgnoreCase("difficult")) {
+            GameType newGameType = GameType.DIFFICULT;
+            responseEntity = createGameByType(newGameType, player);
         } else if (gameType.equalsIgnoreCase("multiplayer")) {
-                GameType newGameType = GameType.MULTIPLAYER;
-                responseEntity = createGameByType(newGameType, player);
-            } else {
-             responseEntity  = new  ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
-        } 
-        return responseEntity ;
-
+            GameType newGameType = GameType.MULTIPLAYER;
+            responseEntity = createGameByType(newGameType, player);
+        } else {
+            responseEntity  = new  ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
+        return responseEntity;
 
     }
 
