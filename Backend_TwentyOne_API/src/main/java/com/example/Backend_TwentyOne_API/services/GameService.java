@@ -102,6 +102,8 @@ Random random = new Random();
         // find the correct game
         Game game = gameRepository.findById(gameId).get();
 
+        Player player = game.getLeadPlayer();
+
         // Check if game has started
         if(!game.getHasStarted()){
             return new Reply(
@@ -128,7 +130,9 @@ Random random = new Random();
         if (game.getCurrentTotal()> 20){
             game.setComplete(true);
             gameRepository.save(game);
-//            pl
+            player.setGamesLost(player.getGamesLost()+1);
+            playerRepository.save(player);
+
             return new Reply(game.getCurrentTotal(),game.getComplete(),"Game Over! You lose :(");
         }
 
