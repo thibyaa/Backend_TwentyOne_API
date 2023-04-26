@@ -213,6 +213,8 @@ public class GameController {
 
         if(!player.isPresent()){
             return new ResponseEntity<>("Player not found",HttpStatus.NOT_FOUND);
+        } else if (game.get().getHasStarted()) {
+            return new ResponseEntity<>("Player cannot be removed from game that has already begun!", HttpStatus.NOT_ACCEPTABLE);
         } else if (!game.get().getPlayers().contains(player.get())){
             return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
         } else if (player.get().equals(leadPlayer)){
