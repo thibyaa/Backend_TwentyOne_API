@@ -358,4 +358,11 @@ Random random = new Random();
         gameRepository.deleteById(gameId);
 
     }
+
+    public void removePlayerFromGame(Long gameId, Long playerId) {
+        Player player = playerService.getPlayerById(playerId).get();
+        Game game = getGameById(gameId).get();
+        game.removePlayer(player);
+        gameRepository.save(game);
+    }
 }
