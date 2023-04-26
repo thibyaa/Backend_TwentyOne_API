@@ -348,14 +348,14 @@ Random random = new Random();
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 
-    public boolean deleteGame(long gameId) {
-        Optional<Game> game = gameRepository.findById(gameId);
-        if (game.isPresent()) {
-            gameRepository.deleteById(gameId);
-            return true;
-        } else {
-            return false;
+    public void deleteGame(long gameId) {
+        Game game = gameRepository.findById(gameId).get();
+        List<Player> playerList = game.getPlayers();
+        for(Player player : playerList){
+            player.removeGame(game);
+            playerRepository.save(player);
         }
-    }
+        gameRepository.deleteById(gameId);
 
+    }
 }

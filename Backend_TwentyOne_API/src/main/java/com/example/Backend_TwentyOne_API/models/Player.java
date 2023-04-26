@@ -67,4 +67,8 @@ public class Player {
     public void incrementGamesLost() {
         this.gamesLost += 1;
     }
+
+    public void removeGame(Game game){
+        this.games.remove(game);
+    }
 }
