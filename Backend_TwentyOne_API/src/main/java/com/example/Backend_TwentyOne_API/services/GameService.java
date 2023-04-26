@@ -5,6 +5,7 @@ import com.example.Backend_TwentyOne_API.models.GameType;
 import com.example.Backend_TwentyOne_API.models.Player;
 import com.example.Backend_TwentyOne_API.models.Reply;
 import com.example.Backend_TwentyOne_API.repositories.GameRepository;
+import com.example.Backend_TwentyOne_API.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ Random random = new Random();
 
     @Autowired
     PlayerService playerService;
+
+    @Autowired
+    PlayerRepository playerRepository;
 
     public GameService(){
 
@@ -124,6 +128,7 @@ Random random = new Random();
         if (game.getCurrentTotal()> 20){
             game.setComplete(true);
             gameRepository.save(game);
+//            pl
             return new Reply(game.getCurrentTotal(),game.getComplete(),"Game Over! You lose :(");
         }
 

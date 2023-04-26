@@ -16,6 +16,9 @@ public class Player {
     @Column
     private String name;
 
+    @Column(name = "games_lost")
+    private int gamesLost;
+
     @JsonIgnoreProperties({"players"})
     @ManyToMany(mappedBy = "players")
     private List<Game> games;
@@ -23,6 +26,7 @@ public class Player {
     public Player(String name){
         this.name = name;
         this.games = new ArrayList<>();
+        this.gamesLost = 0;
     }
 
     public Player(){}
@@ -49,5 +53,17 @@ public class Player {
 
     public void setGames(List<Game> games) {
         this.games = games;
+    }
+
+    public int getGamesLost() {
+        return gamesLost;
+    }
+
+    public void setGamesLost(int gamesLost) {
+        this.gamesLost = gamesLost;
+    }
+
+    public void incrementGamesLost() {
+        this.gamesLost += 1;
     }
 }
