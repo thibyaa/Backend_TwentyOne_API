@@ -46,4 +46,8 @@ public class PlayerService {
         return player.getName();
     }
 
+    public List<Player> getLoserBoard() {
+        return playerRepository.findByGamesLostIgnoreGames();
+    }
+
 }
