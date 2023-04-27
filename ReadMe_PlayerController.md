@@ -3,7 +3,9 @@ This class is responsible for handling HTTP requests related to player data in t
 
 ## Annotations Used
 • @RestController: This annotation is used to indicate that the PlayerController class is a RESTful controller. It combines the functionality of @Controller and @ResponseBody, meaning that all methods in the class will return data in JSON format.
+
 • @RequestMapping: This annotation is used to map HTTP requests to specific handler methods. In this case, the value attribute is set to "/players", so all requests that start with "/players" will be handled by methods in this class.
+
 • @Autowired: This annotation is used to inject an instance of the PlayerService class into this controller. It automatically wires the PlayerService dependency into the PlayerController. This allows the controller to call methods from the service without needing to instantiate it manually.
 
 ## Endpoints used
@@ -42,6 +44,9 @@ This class is responsible for handling HTTP requests related to player data in t
 
 ## Methods used
 • getAllPlayers(): This method returns a list of all players in the database.
+
 • getPlayerById(Long id): This method returns a specific player by their unique identifier. If the player is not found, a 404 NOT FOUND response is returned.
+
 • addNewPlayer(Player player): This method adds a new player to the database and returns a 201 CREATED response.
+
 •deletePlayer(Long id): This method deletes a player from the database by their unique identifier. If the player is not found, a 404 NOT FOUND response is returned.
