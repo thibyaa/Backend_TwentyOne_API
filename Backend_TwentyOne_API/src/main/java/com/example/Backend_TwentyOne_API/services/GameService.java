@@ -69,32 +69,24 @@ Random random = new Random();
 
     }
 
-
-
-
-//        check player exists before creating game
-//        else create game depending on gameType
-//        Optional<Player> player = playerService.getPlayerById(playerId);
-//        if(!player.isPresent()){
+//    Optional<Game> game = gameService.getGameById(gameId);
+//        if (!game.isPresent()) {
 //            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        } else if (game.get().getHasStarted()) {
+//            Reply reply = gameService.startGameAlreadyStarted(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)
+//                && game.get().getPlayers().size() < 2) {
+//            Reply reply = gameService.startGameMultiplayerNotEnoughPlayers(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)){
+//            Reply reply = gameService.startNewGameMultiplayer(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
+//        } else{
+//            Reply reply = gameService.startNewGame(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
 //        }
-//        else {
-//            if (gameType.equalsIgnoreCase("Easy")) {
-//                GameType newGameType = GameType.EASY;
-//                Reply reply = gameService.createNewGame(playerId, newGameType);
-//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
-//            } else if (gameType.equalsIgnoreCase("difficult")) {
-//                GameType newGameType = GameType.DIFFICULT;
-//                Reply reply = gameService.createNewGame(playerId, newGameType);
-//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
-//            } else if (gameType.equalsIgnoreCase("multiplayer")) {
-//                GameType newGameType = GameType.MULTIPLAYER;
-//                Reply reply = gameService.createNewGame(playerId, newGameType);
-//                return new ResponseEntity<>(reply, HttpStatus.CREATED);
-//            } else {
-//                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//            }
-//        }
+//    }
 
 
     public Reply startNewGame(Long gameId) {
@@ -124,6 +116,33 @@ Random random = new Random();
             message = playerService.getPlayerNameByGame(game) + " to start. Your turn.";
         }
         gameRepository.save(game);
+
+        return new Reply(
+                game.getCurrentTotal(),
+                false,
+                message
+        );
+
+    }
+
+    public Reply startNewGameMultiplayer(Long gameId) {
+        //        get game by id
+        Game game = getGameById(gameId).get();
+
+//        start game
+        game.setHasStarted(true);
+        gameRepository.save(game);
+
+//        flip coin to decide who starts
+        int whoToStart = random.nextInt(0,game.getPlayers().size());
+        Player player = game.getPlayers().get(whoToStart);
+        Long firstPlayerId = player.getId();
+        game.setCurrentPlayerId(firstPlayerId);
+        gameRepository.save(game);
+        String firstPlayerName = player.getName();
+
+//       identify starting player and personalise message
+        String message = "Player " + firstPlayerId + ", " + firstPlayerName + ", to start!";
 
         return new Reply(
                 game.getCurrentTotal(),
