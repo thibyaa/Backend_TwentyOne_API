@@ -172,6 +172,91 @@ Random random = new Random();
         );
     }
 
+          public ResponseEntity<Reply> submitTurn(Long gameId, Long playerId, int guess) {
+                Optional<Game> game = getGameById(gameId);
+                Optional<Player> player = playerService.getPlayerById(playerId);
+                ResponseEntity<Reply> responseEntity;
+                if (game.isEmpty()){
+                    responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                }
+                else if (player.isPresent()){
+                    responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                }
+                else if (!game.get().getHasStarted()){
+                    Reply reply = gameNotStarted(gameId);
+                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+                }
+                else if (game.get().getComplete()){
+                    Reply reply = gameAlreadyComplete(gameId);
+                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+                }
+                else if (game.get().getCurrentPlayerId()!=playerId){
+                    Reply reply = wrongPlayer(gameId, playerId);
+                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+                }
+                else if (!((guess < 4) && (guess > 0))){
+                    Reply reply = invalidGuess(gameId);
+                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+                }
+                else if(game.get().getGameType().equals(GameType.MULTIPLAYER)){
+                    Reply reply = processTurnMultiplayer(gameId, guess);
+                    responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
+                }
+                else{
+                    Reply reply = processTurn(gameId, guess);
+                    responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
+                }
+                return  responseEntity;
+          }
+
+    private Reply gameNotStarted(Long gameId) {
+        Game game = getGameById(gameId).get();
+        return new Reply(
+                0,
+                false,
+                "Game with id " + game.getId() + " has not been started");
+
+    }
+//        get game by gameId
+//        get player by playerId
+//        check if the game exists
+//        check if the player exists
+//        Check if the game has started
+//        check if game is not complete
+//        check player who submits guess is player whose turn it is
+//        check guess is 1,2,or 3
+//        then processTurnMultiplayer(gameId, guess)
+//        otherwise processTurnSinglePlayer(gameId, guess)
+//
+//        Optional<Game> game = gameService.getGameById(gameId);
+//        Optional<Player> player = playerService.getPlayerById(playerId);
+//        if (!game.isPresent()){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        } else if(!player.isPresent()){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        } else if(game.get().getComplete()){
+//            Reply reply = gameService.gameAlreadyComplete(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else if(game.get().getCurrentPlayerId() != playerId){
+//            Reply reply = gameService.wrongPlayer(gameId, playerId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        }else if(!((guess < 4) && (guess >0))){
+//            Reply reply = gameService.invalidGuess(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)) {
+//            Reply reply = gameService.processTurnMultiplayer(gameId, guess);
+//            return new ResponseEntity<>(reply, HttpStatus.OK);
+//        } else {
+//            Reply reply = gameService.processTurn(gameId, guess);
+//            return new ResponseEntity<>(reply, HttpStatus.OK);
+//        }
+//    }
+
+    // Check
+
+
+
+
     public Reply processTurn (Long gameId, int guess){
 
         // find the correct game

@@ -84,7 +84,9 @@ public class GameController {
     @PutMapping(value = "/{gameId}")
     public ResponseEntity<Reply> submitTurn (@PathVariable Long gameId,
                                              @RequestParam Long playerId,
-                                             @RequestParam int guess){
+                                             @RequestParam int guess) {
+        return gameService.submitTurn(gameId, playerId, guess);
+    }
 
 //        get game by gameId
 //        get player by playerId
@@ -95,33 +97,32 @@ public class GameController {
 //        check guess is 1,2,or 3
 //        then processTurnMultiplayer(gameId, guess)
 //        otherwise processTurnSinglePlayer(gameId, guess)
-
-        Optional<Game> game = gameService.getGameById(gameId);
-        Optional<Player> player = playerService.getPlayerById(playerId);
-        if (!game.isPresent()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else if(!player.isPresent()){
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else if(game.get().getComplete()){
-            Reply reply = gameService.gameAlreadyComplete(gameId);
-            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else if(game.get().getCurrentPlayerId() != playerId){
-            Reply reply = gameService.wrongPlayer(gameId, playerId);
-            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        }else if(!((guess < 4) && (guess >0))){
-            Reply reply = gameService.invalidGuess(gameId);
-            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)) {
-            Reply reply = gameService.processTurnMultiplayer(gameId, guess);
-            return new ResponseEntity<>(reply, HttpStatus.OK);
-        } else {
-            Reply reply = gameService.processTurn(gameId, guess);
-            return new ResponseEntity<>(reply, HttpStatus.OK);
-        }
-    }
+//
+//        Optional<Game> game = gameService.getGameById(gameId);
+//        Optional<Player> player = playerService.getPlayerById(playerId);
+//        if (!game.isPresent()){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        } else if(!player.isPresent()){
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        } else if(game.get().getComplete()){
+//            Reply reply = gameService.gameAlreadyComplete(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else if(game.get().getCurrentPlayerId() != playerId){
+//            Reply reply = gameService.wrongPlayer(gameId, playerId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        }else if(!((guess < 4) && (guess >0))){
+//            Reply reply = gameService.invalidGuess(gameId);
+//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)) {
+//            Reply reply = gameService.processTurnMultiplayer(gameId, guess);
+//            return new ResponseEntity<>(reply, HttpStatus.OK);
+//        } else {
+//            Reply reply = gameService.processTurn(gameId, guess);
+//            return new ResponseEntity<>(reply, HttpStatus.OK);
+//        }
+//    }
 
     // Check
-
 
 //
 }
