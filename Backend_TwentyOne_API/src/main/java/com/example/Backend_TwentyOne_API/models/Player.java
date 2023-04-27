@@ -9,6 +9,7 @@ import java.util.List;
 @Entity(name = "players")
 public class Player {
 
+//    PARAMETERS
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,14 +25,17 @@ public class Player {
 //    @Transient
     private List<Game> games;
 
+//    CONSTRUCTOR
     public Player(String name){
         this.name = name;
         this.games = new ArrayList<>();
         this.gamesLost = 0;
     }
 
+//    DEFAULT CONSTRUCTOR
     public Player(){}
 
+//    GETTERS AND SETTERS
     public Long getId() {
         return id;
     }
@@ -64,6 +68,7 @@ public class Player {
         this.gamesLost = gamesLost;
     }
 
+//    LITTLE METHODS
     public void incrementGamesLost() {
         this.gamesLost += 1;
     }

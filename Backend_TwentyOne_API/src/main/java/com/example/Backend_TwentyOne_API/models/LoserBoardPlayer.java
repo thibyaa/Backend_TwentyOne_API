@@ -1,24 +1,26 @@
 package com.example.Backend_TwentyOne_API.models;
 
 public class LoserBoardPlayer {
+
+//    PARAMETERS
     private String name;
 
     private Long playerId;
 
     private int gamesLost;
 
+//    CONSTRUCTOR
     public LoserBoardPlayer(String name, Long playerId, int gamesLost){
         this.name = name;
-
         this.playerId = playerId;
-
         this.gamesLost = gamesLost;
     }
 
+//    DEFAULT CONSTRUCTOR
     public LoserBoardPlayer(){
-
     }
 
+//    GETTERS AND SETTERS
     public String getName() {
         return name;
     }

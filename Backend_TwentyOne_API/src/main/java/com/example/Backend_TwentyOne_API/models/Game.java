@@ -9,6 +9,7 @@ import java.util.List;
 @Entity(name = "games")
 public class Game {
 
+//    PARAMETERS
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +29,6 @@ public class Game {
     @Column(name = "game_type")
     private GameType gameType;
 
-
     @ManyToOne
     @JoinColumn(name = "lead_player_id")
     @JsonIgnoreProperties({"games"})
@@ -44,6 +44,7 @@ public class Game {
     private List<Player> players;
 
 
+//    CONSTRUCTOR
     public Game(Player leadPlayer, GameType gameType){
         this.currentTotal = 0;
         this.currentPlayerId = leadPlayer.getId();
@@ -53,11 +54,12 @@ public class Game {
         this.players = new ArrayList<>();
         this.players.add(leadPlayer);
         this.gameType = gameType;
-
     }
 
+//    DEFAULT CONSTRUCTOR
     public Game(){}
 
+//    GETTERS AND SETTERS
     public Long getId() {
         return id;
     }
@@ -121,6 +123,8 @@ public class Game {
     public void setGameType(GameType gameType) {
         this.gameType = gameType;
     }
+
+//    LITTLE METHODS
     public void incrementCurrentTotal(int increment){
         this.currentTotal += increment;
     }
@@ -130,7 +134,6 @@ public class Game {
     }
 
     public void removePlayer(Player player) {
-
         this.players.remove(player);
     }
 }

@@ -1,9 +1,6 @@
 package com.example.Backend_TwentyOne_API.controllers;
 
-import com.example.Backend_TwentyOne_API.models.Game;
 import com.example.Backend_TwentyOne_API.models.Player;
-import com.example.Backend_TwentyOne_API.models.Reply;
-import com.example.Backend_TwentyOne_API.services.GameService;
 import com.example.Backend_TwentyOne_API.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,14 +22,6 @@ public class PlayerController {
         List<Player> players = playerService.getAllPlayers();
         return new ResponseEntity<>(players, HttpStatus.OK);
     }
-//
-//    @GetMapping(value = "/loserBoard")
-//    public ResponseEntity<List<Player>> getLoserBoard(){
-//        List<Player> players = playerService.getLoserBoard();
-//        return new ResponseEntity<>(players, HttpStatus.OK);
-//    }
-
-
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Player> getPlayerById(@PathVariable Long id){
@@ -60,19 +49,5 @@ public class PlayerController {
             return new ResponseEntity<>("Player deleted successfully", HttpStatus.OK);
         }
     }
-    //  Delete player by specifying player id
-    //  Create deletePlayer method inside PlayerService class
-    //  Create if loop to check if player has been deleted successfully or not
-//
-
-// removing each player from the game
-
-    // loop through every player in the game
-    // remove the game from the list of players
-    // delete players gameList
-
-
-
-        //
 
 }

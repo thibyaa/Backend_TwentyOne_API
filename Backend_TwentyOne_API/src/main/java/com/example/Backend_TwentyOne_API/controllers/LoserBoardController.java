@@ -26,7 +26,4 @@ public class LoserBoardController {
          return new ResponseEntity<>(players, HttpStatus.OK);
     }
 
-
-
-
 }

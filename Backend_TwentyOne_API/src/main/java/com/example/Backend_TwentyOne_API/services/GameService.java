@@ -18,8 +18,8 @@ import java.util.Random;
 @Service
 public class GameService {
 
-
-Random random = new Random();
+//    Need random object to 'flip coin' to decide who starts game
+    Random random = new Random();
 
     @Autowired
     GameRepository gameRepository;
@@ -30,8 +30,8 @@ Random random = new Random();
     @Autowired
     PlayerRepository playerRepository;
 
+//    DEFAULT CONSTRUCTOR
     public GameService(){
-
     }
     public List<Game> getAllGames() {
         return gameRepository.findAll();
@@ -43,16 +43,18 @@ Random random = new Random();
 
 
     public ResponseEntity<Reply> createNewGame(long playerId, String gameType) {
-//        Get player by playerId
-//        Check if player exists
-//        Check if gameType is valid
-//        If passes, create new game
 
+//        Get player by playerId
         Optional<Player> player = playerService.getPlayerById(playerId);
+
+//        Initialise responseEntity
         ResponseEntity<Reply> responseEntity;
+
+//        Check if player exists
         if(!player.isPresent()){
              responseEntity = new ResponseEntity(null, HttpStatus.NOT_FOUND);
         }
+//        Create game depending on gameType input
         else if (gameType.equalsIgnoreCase("Easy")) {
             GameType newGameType = GameType.EASY;
             responseEntity = createGameByType(newGameType, player);
@@ -70,26 +72,30 @@ Random random = new Random();
     }
 
     public ResponseEntity<Reply> startNewGame(Long gameId) {
-//        get game by id
-//        check if the game exist
-//        check game has not already started
-//        if the game is multiplayer, check if there are enough players
-//        start the game
 
+//        Get game by id
         Optional <Game> optionalGame = getGameById(gameId);
 
+//        initialise empty responseEntity
         ResponseEntity<Reply> responseEntity;
 
+//        Check if game exists
         if (optionalGame.isEmpty()){
             responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } else if (optionalGame.get().getHasStarted()){
+        }
+//        check if game has already been started
+        else if (optionalGame.get().getHasStarted()){
             Reply reply = startGameAlreadyStarted(gameId);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else if (optionalGame.get().getGameType().equals(GameType.MULTIPLAYER)
+        }
+//        Check if multiplayer game has enough players to begin
+        else if (optionalGame.get().getGameType().equals(GameType.MULTIPLAYER)
         && optionalGame.get().getPlayers().size() < 2){
             Reply reply = startGameMultiplayerNotEnoughPlayers(gameId);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-        } else if (optionalGame.get().getGameType().equals(GameType.MULTIPLAYER)){
+        }
+//        Start game depending on gameType
+        else if (optionalGame.get().getGameType().equals(GameType.MULTIPLAYER)){
             Reply reply = startNewGameMultiplayer(gameId);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
         } else {
@@ -98,10 +104,10 @@ Random random = new Random();
         } return responseEntity;
     }
 
-        public Reply startNewGameSinglePlayer(Long gameId){
+
+    public Reply startNewGameSinglePlayer(Long gameId){
 
         Game game = getGameById(gameId).get();
-
 
 //        start game
         game.setHasStarted(true);
@@ -132,11 +138,10 @@ Random random = new Random();
                 false,
                 message
         );
-
     }
 
     public Reply startNewGameMultiplayer(Long gameId) {
-        //        get game by id
+//        get game by id
         Game game = getGameById(gameId).get();
 
 //        start game
@@ -153,7 +158,6 @@ Random random = new Random();
 
 //       identify starting player and personalise message
         String message = "Player " + firstPlayerId + ", " + firstPlayerName + ", to start!";
-
         return new Reply(
                 game.getCurrentTotal(),
                 false,
@@ -161,6 +165,7 @@ Random random = new Random();
         );
     }
 
+//    used in startGame method to return error if game has already started
     public Reply startGameAlreadyStarted(Long gameId){
         Game game = getGameById(gameId).get();
         int currentTotal = game.getCurrentTotal();
@@ -172,115 +177,82 @@ Random random = new Random();
         );
     }
 
-          public ResponseEntity<Reply> submitTurn(Long gameId, Long playerId, int guess) {
-                Optional<Game> game = getGameById(gameId);
-                Optional<Player> player = playerService.getPlayerById(playerId);
-                ResponseEntity<Reply> responseEntity;
-                if (game.isEmpty()){
-                    responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-                }
-                else if (player.isPresent()){
-                    responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-                }
-                else if (!game.get().getHasStarted()){
-                    Reply reply = gameNotStarted(gameId);
-                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-                }
-                else if (game.get().getComplete()){
-                    Reply reply = gameAlreadyComplete(gameId);
-                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-                }
-                else if (game.get().getCurrentPlayerId()!=playerId){
-                    Reply reply = wrongPlayer(gameId, playerId);
-                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-                }
-                else if (!((guess < 4) && (guess > 0))){
-                    Reply reply = invalidGuess(gameId);
-                    responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-                }
-                else if(game.get().getGameType().equals(GameType.MULTIPLAYER)){
-                    Reply reply = processTurnMultiplayer(gameId, guess);
-                    responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
-                }
-                else{
-                    Reply reply = processTurn(gameId, guess);
-                    responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
-                }
-                return  responseEntity;
-          }
+//    METHOD TO PROCESS TURN
+    public ResponseEntity<Reply> submitTurn(Long gameId, Long playerId, int guess) {
 
+//        Get game and player by ids
+        Optional<Game> game = getGameById(gameId);
+        Optional<Player> player = playerService.getPlayerById(playerId);
+
+//        initialise empty responseEntity
+        ResponseEntity<Reply> responseEntity;
+
+//        check game exists
+        if (game.isEmpty()){
+            responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+//        check player exists
+        else if (player.isEmpty()){
+            responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+//      check game has started
+        else if (!game.get().getHasStarted()){
+            Reply reply = gameNotStarted(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+//        check game has not finished
+        else if (game.get().getComplete()){
+            Reply reply = gameAlreadyComplete(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
+//        check player who is submitting turn is correct player
+        else if (game.get().getCurrentPlayerId()!=playerId){
+            Reply reply = wrongPlayer(gameId, playerId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+//        check guess is 1, 2, or 3
+        else if (!((guess < 4) && (guess > 0))){
+            Reply reply = invalidGuess(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+//        process turn if multiplayer
+        else if(game.get().getGameType().equals(GameType.MULTIPLAYER)){
+            Reply reply = processTurnMultiplayer(gameId, guess);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
+        }
+
+//        process turn if single player
+        else{
+            Reply reply = processTurnSinglePlayer(gameId, guess);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
+        }
+        return  responseEntity;
+      }
+
+
+//      used in submitTurn method to return error if game has not yet started
     private Reply gameNotStarted(Long gameId) {
         Game game = getGameById(gameId).get();
         return new Reply(
                 0,
                 false,
-                "Game with id " + game.getId() + " has not been started");
+                "Game with id " + game.getId() + " has not been started"
+        );
 
     }
-//        get game by gameId
-//        get player by playerId
-//        check if the game exists
-//        check if the player exists
-//        Check if the game has started
-//        check if game is not complete
-//        check player who submits guess is player whose turn it is
-//        check guess is 1,2,or 3
-//        then processTurnMultiplayer(gameId, guess)
-//        otherwise processTurnSinglePlayer(gameId, guess)
-//
-//        Optional<Game> game = gameService.getGameById(gameId);
-//        Optional<Player> player = playerService.getPlayerById(playerId);
-//        if (!game.isPresent()){
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        } else if(!player.isPresent()){
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        } else if(game.get().getComplete()){
-//            Reply reply = gameService.gameAlreadyComplete(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-//        } else if(game.get().getCurrentPlayerId() != playerId){
-//            Reply reply = gameService.wrongPlayer(gameId, playerId);
-//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-//        }else if(!((guess < 4) && (guess >0))){
-//            Reply reply = gameService.invalidGuess(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)) {
-//            Reply reply = gameService.processTurnMultiplayer(gameId, guess);
-//            return new ResponseEntity<>(reply, HttpStatus.OK);
-//        } else {
-//            Reply reply = gameService.processTurn(gameId, guess);
-//            return new ResponseEntity<>(reply, HttpStatus.OK);
-//        }
-//    }
 
-    // Check
+//    used in submitTurn to process turn in single player game
+    public Reply processTurnSinglePlayer (Long gameId, int guess){
 
-
-
-
-    public Reply processTurn (Long gameId, int guess){
-
-        // find the correct game
+        // find the correct game and player
         Game game = gameRepository.findById(gameId).get();
 
         Player player = game.getLeadPlayer();
-
-        // Check if game has started
-        if(!game.getHasStarted()){
-            return new Reply(
-                    game.getCurrentTotal(),
-                    false,
-                    "game has not started"
-            );
-        }
-
-        // Check game is already complete
-        if (game.getComplete()){
-            return new Reply(
-                    game.getCurrentTotal(),
-                    true,
-                    "game is already complete"
-            );
-        }
 
         // increment total by user input
         game.setCurrentTotal(game.getCurrentTotal()+ guess);
@@ -296,8 +268,7 @@ Random random = new Random();
             return new Reply(game.getCurrentTotal(),game.getComplete(),"Game Over! You lose :(");
         }
 
-        // Computer guess
-        // Is the guess "easy" or "hard"? (ENUM) DONE
+        // Computer guess depending on whether easy or difficult mode
         int computerTurn;
         if (game.getGameType().equals(GameType.DIFFICULT)){
             computerTurn = computerTurnDifficult(game);
@@ -305,56 +276,39 @@ Random random = new Random();
         else { computerTurn = computerTurnEasy(game);}
         gameRepository.save(game);
 
+//        check if computer has now lost
         if (game.getCurrentTotal()>20){
             game.setComplete(true);
             gameRepository.save(game);
             return new Reply(game.getCurrentTotal(), game.getComplete(), "Game Over! You win :D");
         }
+
+//        return to player to submit next turn
         else {
             return new Reply(game.getCurrentTotal(), false, "Computer played " + computerTurn + "! Your move...");
         }
 
     }
 
-
+//      used in submitTurn method to process turn in multiplayer game
     public Reply processTurnMultiplayer(Long gameId, int guess) {
 
         // find the correct game
         Game game = gameRepository.findById(gameId).get();
 
-//        find list of player
+//        find list of players
         List<Player> playerList = game.getPlayers();
 
 //        find current player
         Long currentPlayerId = game.getCurrentPlayerId();
         Player currentPlayer = playerService.getPlayerById(currentPlayerId).get();
 
-
-
-        // Check if game has started
-        if(!game.getHasStarted()){
-            return new Reply(
-                    game.getCurrentTotal(),
-                    false,
-                    "game has not started"
-            );
-        }
-
-        // Check game is not already complete
-        if (game.getComplete()){
-            return new Reply(
-                    game.getCurrentTotal(),
-                    true,
-                    "game is already complete"
-            );
-        }
-
-        // increment total by user input
+//        increment total by user input
         game.setCurrentTotal(game.getCurrentTotal()+ guess);
         gameRepository.save(game);
 
-        // Check is below 21
-//        if not, change current to next player
+//        Check is below 21
+
         if (game.getCurrentTotal()> 20) {
             game.setComplete(true);
             gameRepository.save(game);
@@ -363,21 +317,24 @@ Random random = new Random();
             return new Reply(
                     game.getCurrentTotal(),
                     game.getComplete(),
-                    "Game Over! Player " + game.getCurrentPlayerId() + ", " + playerService.getPlayerNameById(game.getCurrentPlayerId())  +" loses :(");
-        }else {
-//    increment player turn to the person
-
+                    "Game Over! Player " + game.getCurrentPlayerId() + ", "
+                            + playerService.getPlayerNameById(game.getCurrentPlayerId())  +" loses :("
+            );
+        }
+//        if not, increment player turn to the next person and return
+        else {
             Long nextPlayerId = idOfNextPlayerToGuess(playerList, currentPlayerId);
             game.setCurrentPlayerId(nextPlayerId);
             gameRepository.save(game);
             return new Reply(game.getCurrentTotal(),
                     false,
-                    "It is player " + game.getCurrentPlayerId() + "'s turn");
-
+                    "It is player " + game.getCurrentPlayerId() + "'s turn"
+            );
         }
     }
 
 
+//    logic for strategy for computer in hard mode single player (go to multiple of 4 if you can)
     public int computerTurnDifficult(Game game) {
         int computerTurn;
         if (game.getCurrentTotal() % 4 != 0) {
@@ -389,27 +346,33 @@ Random random = new Random();
         return computerTurn;
     }
 
+//    picks random number to play
     public int computerTurnEasy(Game game) {
         int computerTurn = random.nextInt(1,4);
         game.incrementCurrentTotal(computerTurn);
         return computerTurn;
     }
 
+//    used in processTurnMultiplayer to cycle through list of players to get next player to have turn
     public Long idOfNextPlayerToGuess(List<Player> playerList, Long currentPlayerId){
+
 //        get player by playerId
-//        get index of player in list by currentPlayerId
-//        increment by 1, looping if needed
-//        find nextPlayer by index in list
-//        find nexPlayerId from this
         Player currentPlayer = playerService.getPlayerById(currentPlayerId).get();
+
+//        get index of player in list by currentPlayerId
         int currentPlayerIndex = playerList.indexOf(currentPlayer);
+
+//        increment by 1, looping if needed
         int nextPlayerIndex = (currentPlayerIndex + 1) % playerList.size();
+
+//        set next player to have turn and return their id
         Player nextPlayer = playerList.get(nextPlayerIndex);
         Long nextPlayerId = nextPlayer.getId();
         return nextPlayerId;
     }
 
 
+//    used in submitTurn method in case input is not 1,2, or 3
     public Reply invalidGuess(Long gameId) {
         Game game = getGameById(gameId).get();
         int currentTotal = game.getCurrentTotal();
@@ -421,40 +384,42 @@ Random random = new Random();
         );
     }
 
+//    METHOD TO ADD PLAYER TO GAME BEFORE IT STARTS
     public ResponseEntity<Reply> addPlayerToGame(Long playerId, Long gameId) {
 
-        // Get the player by the playerId,
+//        Get the player by the playerId,
         Optional<Player> player = playerService.getPlayerById(playerId);
 
-        // get game by gameId,
+//        get game by gameId,
         Optional<Game> game = getGameById(gameId);
 
 //        create empty responseEntity
         ResponseEntity<Reply> responseEntity;
 
-        // Check the player exists
-        // check game exists
-        if(!player.isPresent()){
-            responseEntity = new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
-        } else if(!game.isPresent()){
+//        Check the player exists
+        if(player.isEmpty()){
             responseEntity = new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
-        // Check the players not already in the game
+//        Check game exists
+        else if(game.isEmpty()){
+            responseEntity = new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+//        Check the players not already in the game
         else if (game.get().getPlayers().contains(player.get())){
             Reply reply = addPlayerToGameAlreadyContains(gameId, playerId);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
         }
-        // Check the game hasn't started
+//        Check the game hasn't started
         else if(game.get().getHasStarted()){
             Reply reply = addPlayerToGameAlreadyStarted(gameId);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
         }
-        // Check if game is multiplayer
+//        Check if game is multiplayer
         else if (!game.get().getGameType().equals(GameType.MULTIPLAYER)){
             Reply reply = addPlayerToWrongGameType(gameId);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
         }
-        // Start game
+//        Start game
         else{
             Game actualGame = game.get();
             actualGame.addPlayer(player.get());
@@ -463,11 +428,12 @@ Random random = new Random();
             Reply reply = new Reply(actualGame.getCurrentTotal(), actualGame.getComplete(), message);
             responseEntity = new ResponseEntity<>(reply, HttpStatus.OK);
         }
-        //  return response entity
+//        return response entity
         return responseEntity;
     }
 
 
+//    used in startGame method in case multiplayer game has only 1 player
     public Reply startGameMultiplayerNotEnoughPlayers(Long gameId) {
         Game game = getGameById(gameId).get();
         String playerName = game.getLeadPlayer().getName();
@@ -478,6 +444,7 @@ Random random = new Random();
         );
     }
 
+//    used in submitTurn in case player tries to play when it is not their turn
     public Reply wrongPlayer(Long gameId, Long playerId) {
         Game game = getGameById(gameId).get();
         Long currentPlayerId = game.getCurrentPlayerId();
@@ -489,6 +456,7 @@ Random random = new Random();
         );
     }
 
+//    used in addPlayerToGame method in case player is already in game
     public Reply addPlayerToGameAlreadyContains(Long gameId, Long playerId) {
         Game game = getGameById(gameId).get();
         Player player = playerService.getPlayerById(playerId).get();
@@ -496,26 +464,32 @@ Random random = new Random();
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 
+//    used in addPlayerToGame method in case game has already began
     public Reply addPlayerToGameAlreadyStarted(Long gameId) {
         Game game = getGameById(gameId).get();
         String message = "Game " + game.getId() + " has already started. Cannot add anymore players";
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 
+//    used in addPlayerToGame method in case game is single player
     public Reply addPlayerToWrongGameType(Long gameId) {
         Game game = getGameById(gameId).get();
         String message = "Game " + game.getId() + " is not multiplayer. Cannot add players";
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 
+//    used in submitTurn method in case player tries to submit turn to game that has finished
     public Reply gameAlreadyComplete(Long gameId) {
         Game game = getGameById(gameId).get();
         String message = "Game " + game.getId() + " is finished. Cannot play anymore.";
         return new Reply(game.getCurrentTotal(), game.getComplete(), message);
     }
 
+//    Used to delete game
     public void deleteGame(long gameId) {
         Game game = gameRepository.findById(gameId).get();
+
+//        cycle through player in game, remove them before can delete game
         List<Player> playerList = game.getPlayers();
         for(Player player : playerList){
             player.removeGame(game);
@@ -526,40 +500,40 @@ Random random = new Random();
     }
 
     public ResponseEntity<String> removePlayerFromGame(Long gameId, Long playerId) {
-        //get the target game by id
+//        get the target game by id
         Optional<Game> optionalGame = getGameById(gameId);
-        //get the target player by id
+//        get the target player by id
         Optional<Player> optionalPlayer = playerService.getPlayerById(playerId);
-        //new lead player
+//        new lead player
         Player leadPlayer;
         Game game;
-        //check if game is present
-        if (!optionalGame.isPresent()){
+//        check if game is present
+        if (optionalGame.isEmpty()){
             return new ResponseEntity<String>("Game not found",HttpStatus.NOT_FOUND);
         }
-        //get the lead player
+//        get the lead player
         else{
             leadPlayer = optionalGame.get().getLeadPlayer();
             game = optionalGame.get();
         }
-        //check if the player is present
-        if (!optionalPlayer.isPresent()){
+//        check if the player is present
+        if (optionalPlayer.isEmpty()){
             return new ResponseEntity<String>("Player not found",HttpStatus.NOT_FOUND);
         }
-        //check if the game has already started
+//        check if the game has already started
         else if (game.getHasStarted()){
             return new ResponseEntity<String>("Player cannot be removed from game that has already begun!",
                     HttpStatus.NOT_ACCEPTABLE);
         }
-        //check if the player is not in the game
+//        check if the player is not in the game
         else if (!game.getPlayers().contains(optionalPlayer.get())){
             return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
         }
-        //check if the player is lead player
+//        check if the player is lead player
         else if (leadPlayer.equals(optionalPlayer.get())){
             return new ResponseEntity<>("Lead player cannot be removed from game",HttpStatus.NOT_ACCEPTABLE);
         }
-        //remove player from game
+//        remove player from game
         else {
             Player player = optionalPlayer.get();
             game.removePlayer(player);
@@ -568,7 +542,7 @@ Random random = new Random();
         }
     }
 
-
+//        used in createGame method to create game depending on inputted gameType
     public ResponseEntity<Reply> createGameByType(GameType gameType, Optional<Player> player){
         Game game = new Game(player.get(), gameType);
         Reply reply = new Reply(0,
