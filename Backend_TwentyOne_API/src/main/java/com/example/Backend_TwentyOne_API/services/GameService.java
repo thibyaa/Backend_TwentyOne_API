@@ -89,9 +89,39 @@ Random random = new Random();
 //    }
 
 
-    public Reply startNewGame(Long gameId) {
+    public ResponseEntity<Reply> startNewGame(Long gameId) {
 //        get game by id
+//        check if the game exist
+//        check game has not already started
+//        if the game is multiplayer, check if there are enough players
+//        start the game
+
+        Optional <Game> optionalGame = getGameById(gameId);
+
+        ResponseEntity<Reply> responseEntity;
+
+        if (optionalGame.isEmpty()){
+            responseEntity = new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else if (optionalGame.get().getHasStarted()){
+            Reply reply = startGameAlreadyStarted(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else if (optionalGame.get().getGameType().equals(GameType.MULTIPLAYER)
+        && optionalGame.get().getPlayers().size() < 2){
+            Reply reply = startGameMultiplayerNotEnoughPlayers(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
+        } else if (optionalGame.get().getGameType().equals(GameType.MULTIPLAYER)){
+            Reply reply = startNewGameMultiplayer(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
+        } else {
+            Reply reply = startNewGameSinglePlayer(gameId);
+            responseEntity = new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
+        } return responseEntity;
+    }
+
+        public Reply startNewGameSinglePlayer(Long gameId){
+
         Game game = getGameById(gameId).get();
+
 
 //        start game
         game.setHasStarted(true);
@@ -391,33 +421,6 @@ Random random = new Random();
                 gameState,
                 false,
                 "Not your turn, player " + currentPlayerId + " is next."
-        );
-    }
-
-
-    public Reply startNewGameMultiplayer(Long gameId) {
-        //        get game by id
-        Game game = getGameById(gameId).get();
-
-//        start game
-        game.setHasStarted(true);
-        gameRepository.save(game);
-
-//        flip coin to decide who starts
-        int whoToStart = random.nextInt(0,game.getPlayers().size());
-        Player player = game.getPlayers().get(whoToStart);
-        Long firstPlayerId = player.getId();
-        game.setCurrentPlayerId(firstPlayerId);
-        gameRepository.save(game);
-        String firstPlayerName = player.getName();
-
-//       identify starting player and personalise message
-        String message = "Player " + firstPlayerId + ", " + firstPlayerName + ", to start!";
-
-        return new Reply(
-                game.getCurrentTotal(),
-                false,
-                message
         );
     }
 
