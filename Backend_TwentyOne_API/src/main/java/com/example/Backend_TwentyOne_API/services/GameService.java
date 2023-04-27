@@ -438,12 +438,71 @@ Random random = new Random();
 
     }
 
-    public void removePlayerFromGame(Long gameId, Long playerId) {
-        Player player = playerService.getPlayerById(playerId).get();
-        Game game = getGameById(gameId).get();
-        game.removePlayer(player);
-        gameRepository.save(game);
+    public ResponseEntity<String> removePlayerFromGame(Long gameId, Long playerId) {
+        //get the target game by id
+        Optional<Game> optionalGame = getGameById(gameId);
+        //get the target player by id
+        Optional<Player> optionalPlayer = playerService.getPlayerById(playerId);
+        //new lead player
+        Player leadPlayer;
+        Game game;
+        //check if game is present
+        if (!optionalGame.isPresent()){
+            return new ResponseEntity<String>("Game not found",HttpStatus.NOT_FOUND);
+        }
+        //get the lead player
+        else{
+            leadPlayer = optionalGame.get().getLeadPlayer();
+            game = optionalGame.get();
+        }
+        //check if the player is present
+        if (!optionalPlayer.isPresent()){
+            return new ResponseEntity<String>("Player not found",HttpStatus.NOT_FOUND);
+        }
+        //check if the game has already started
+        else if (game.getHasStarted()){
+            return new ResponseEntity<String>("Player cannot be removed from game that has already begun!",
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
+        //check if the player is not in the game
+        else if (!game.getPlayers().contains(optionalPlayer.get())){
+            return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
+        }
+        //check if the player is lead player
+        else if (leadPlayer.equals(optionalPlayer.get())){
+            return new ResponseEntity<>("Lead player cannot be removed from game",HttpStatus.NOT_ACCEPTABLE);
+        }
+        //remove player from game
+        else {
+            Player player = optionalPlayer.get();
+            game.removePlayer(player);
+            gameRepository.save(game);
+            return new ResponseEntity<>("Player successfully removed from game",HttpStatus.OK);
+        }
     }
+
+//    Optional<Player> player = playerService.getPlayerById(playerId);
+//    Optional<Game> game = gameService.getGameById(gameId);
+//    Player leadPlayer;
+//        if(!game.isPresent()){
+//        return new ResponseEntity<>("Game not found",HttpStatus.NOT_FOUND);
+//    } else{
+//        leadPlayer = game.get().getLeadPlayer();
+//    }
+//
+//        if(!player.isPresent()){
+//        return new ResponseEntity<>("Player not found",HttpStatus.NOT_FOUND);
+//    } else if (game.get().getHasStarted()) {
+//        return new ResponseEntity<>("Player cannot be removed from game that has already begun!", HttpStatus.NOT_ACCEPTABLE);
+//    } else if (!game.get().getPlayers().contains(player.get())){
+//        return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
+//    } else if (player.get().equals(leadPlayer)){
+//        return new ResponseEntity<>("Lead player cannot be removed from game",HttpStatus.NOT_ACCEPTABLE);
+//    } else{
+//        gameService.removePlayerFromGame(gameId, playerId);
+//        return new ResponseEntity<>("Player successfully removed from game",HttpStatus.OK);
+//    }
+
 
     public ResponseEntity<Reply> createGameByType(GameType gameType, Optional<Player> player){
         Game game = new Game(player.get(), gameType);

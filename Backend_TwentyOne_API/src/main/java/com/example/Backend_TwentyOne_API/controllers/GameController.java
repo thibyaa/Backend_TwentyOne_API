@@ -56,27 +56,8 @@ public class GameController {
 
     @DeleteMapping("/{gameId}/{playerId}")
     public ResponseEntity<String> removePlayerFromGame(@PathVariable("gameId") Long gameId, @PathVariable("playerId") Long playerId){
-        Optional<Player> player = playerService.getPlayerById(playerId);
-        Optional<Game> game = gameService.getGameById(gameId);
-        Player leadPlayer;
-        if(!game.isPresent()){
-            return new ResponseEntity<>("Game not found",HttpStatus.NOT_FOUND);
-        } else{
-            leadPlayer = game.get().getLeadPlayer();
-        }
+        return gameService.removePlayerFromGame(gameId, playerId);
 
-        if(!player.isPresent()){
-            return new ResponseEntity<>("Player not found",HttpStatus.NOT_FOUND);
-        } else if (game.get().getHasStarted()) {
-            return new ResponseEntity<>("Player cannot be removed from game that has already begun!", HttpStatus.NOT_ACCEPTABLE);
-        } else if (!game.get().getPlayers().contains(player.get())){
-            return new ResponseEntity<>("Player not in this game", HttpStatus.NOT_ACCEPTABLE);
-        } else if (player.get().equals(leadPlayer)){
-            return new ResponseEntity<>("Lead player cannot be removed from game",HttpStatus.NOT_ACCEPTABLE);
-        } else{
-            gameService.removePlayerFromGame(gameId, playerId);
-            return new ResponseEntity<>("Player successfully removed from game",HttpStatus.OK);
-        }
     }
 
 
