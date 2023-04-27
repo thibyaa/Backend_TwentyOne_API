@@ -36,5 +36,22 @@
  
 ### MVP
 
-* Create a game in which the 2 players each count up from zero by 1, 2 or 3. Whichever player reaches 21 first loses
+* Create a game in which the 2 players each count up from zero by 1, 2 or 3. Whichever player reaches 21 first loses!
+* Teach the computer to either play in "easy mode" (random number generator) or "hard mode" (playing to hit multiples of 4 so it will win).
+* Add a player or a game into the database
+* Assign games to a player
 
+### EXTENSION
+* add a multiplayer mode so that games can have multiple players
+* add a "loserboard" for how many times each player lost!
+  
+## UML Diagram and ERD
+
+## Please provide example data and the exact path of each implemented route
+
+## Routes should be in a list organised by-route and not by request method (i.e. GET, POST)
+
+
+## Further extensions 
+
+## Any bugs?!
