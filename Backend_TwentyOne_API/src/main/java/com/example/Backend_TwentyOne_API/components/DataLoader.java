@@ -37,6 +37,7 @@ public class DataLoader implements ApplicationRunner {
         playerRepository.save(player4);
 
         Game game1 = new Game(player1, GameType.EASY);
+        game1.setHasStarted(true);
         gameRepository.save(game1);
         Game game2 = new Game(player2, GameType.DIFFICULT);
         gameRepository.save(game2);
@@ -44,6 +45,9 @@ public class DataLoader implements ApplicationRunner {
         Game game3 = new Game(player3, GameType.MULTIPLAYER);
         game3.addPlayer(player1);
         gameRepository.save(game3);
+
+        Game game4 = new Game(player4, GameType.MULTIPLAYER);
+        gameRepository.save(game4);
 
 
     }

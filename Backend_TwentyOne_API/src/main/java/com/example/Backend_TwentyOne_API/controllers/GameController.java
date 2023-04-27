@@ -61,12 +61,6 @@ public class GameController {
     }
 
 
-//  Delete game by specifying game id
-//  Create deleteGame method inside GameService class
-//  Create if loop to check if game has been deleted successfully or not
-
-
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteGame(@PathVariable("id") Long id) {
         Optional<Game> game = gameService.getGameById(id);
@@ -84,33 +78,6 @@ public class GameController {
     public ResponseEntity<Reply> startNewGame(@PathVariable("gameId") Long gameId) {
         return gameService.startNewGame(gameId);
     }
-
-
-
-
-        // check if game exists
-        // Check game has not already started
-        // Check game if multiplayer has enough players, if fails a response
-        // if passes, than we'll just start the game, depending on whether multiplayer or not
-
-//        Optional<Game> game = gameService.getGameById(gameId);
-//        if (!game.isPresent()) {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        } else if (game.get().getHasStarted()) {
-//            Reply reply = gameService.startGameAlreadyStarted(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)
-//                && game.get().getPlayers().size() < 2) {
-//            Reply reply = gameService.startGameMultiplayerNotEnoughPlayers(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.NOT_ACCEPTABLE);
-//        } else if (game.get().getGameType().equals(GameType.MULTIPLAYER)){
-//            Reply reply = gameService.startNewGameMultiplayer(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
-//        } else{
-//            Reply reply = gameService.startNewGame(gameId);
-//            return new ResponseEntity<>(reply, HttpStatus.ACCEPTED);
-//        }
-//    }
 
 
 
