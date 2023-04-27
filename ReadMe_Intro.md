@@ -10,7 +10,8 @@
 * While you should aim to test your app thoroughly, squashing any persistent bugs, the README should contain any additional quirks that a user should be made aware of
 
 
-#Technical Information
+#21 Game API
+##Technical Information
 
 * Spring Build and Dependencies: 
 	* Project type: Maven	
@@ -30,5 +31,10 @@
 	* PostgreSQL
 
 
-	
-	 	
+
+##Project Aims
+ 
+### MVP
+
+* Create a game in which the 2 players each count up from zero by 1, 2 or 3. Whichever player reaches 21 first loses
+
