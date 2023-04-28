@@ -22,12 +22,13 @@
 
 * Installation instructions
 	* Git clone from the Repo 
-	* *Include SSH Key Here*
+	* [SSH Key] (git@github.com:williamdorling/Backend_TwentyOne_API.git)
 	* In your computer's terminal, "git clone" + SSH Key
-	* All java files are in *Backend_TwentyOne_API*	
-	* ReadMe and Diagrams are in the *Project* directory
-	* Your SQL database will need to be created using the database name 	*Backend_TwentyOne_API*	 
-	* We set up our tests using Postman on localhost:8080
+	* All java files are in **Backend_TwentyOne_API**
+	* ReadMe and Diagrams are in the **Project** directory
+	* Your SQL database will need to be created using the database name 	*Backend_TwentyOne_API*. 
+	* Database settings are in **Resources > Application Properties** 
+	* We set up our tests using Postman on *localhost:8080*
 
 
 
