@@ -25,7 +25,9 @@
 	* *Include SSH Key Here*
 	* In your computer's terminal, "git clone" + SSH Key
 	* All java files are in *Backend_TwentyOne_API*	
-	* ReadMe and Diagrams are in the *Project* directory	
+	* ReadMe and Diagrams are in the *Project* directory
+	* Your SQL database will need to be created using the database name 	*Backend_TwentyOne_API*	 
+	* We set up our tests using Postman on localhost:8080
 
 
 
