@@ -1,11 +1,10 @@
 
-
 ## @GetMapping - getAllGames
 
-Indicates
 
-Url: localhost:8080/games/3
+To retreive the list of all possible games. 
 
+url: /games
 
     @GetMapping
     public ResponseEntity<List<Game>>  getAllGames(){
@@ -15,8 +14,9 @@ Url: localhost:8080/games/3
 
 ## @GetMapping - getGamesById
 
-Indicates
+url: /games/{id}
 
+To retrieve a single game by id. If game is not found, returns http 404 exception not found. 
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Game> getGameById(@PathVariable Long id){
@@ -30,7 +30,9 @@ Indicates
     
 ## @PostMapping - createNewGame
 
-Indicates
+url: GET POST /games/{id}
+
+To create a new game.
 
       @PostMapping
     public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam String gameType) {
@@ -39,6 +41,7 @@ Indicates
     
 ## @PostMapping - addPlayerToGame 
 
+To add the player to a game. Add a player to a game by passing player Id and game Id in the path.
     
      @PostMapping( value = "/{gameId}")
     public ResponseEntity<Reply> addPlayerToGame(@PathVariable Long gameId, @RequestParam Long playerId) {
@@ -46,6 +49,9 @@ Indicates
     }
 
 ## @DeleteMapping - removePlayerToGame
+
+To remove the player to a game. By passing player Id and game Id in the path.
+
 
     
     @DeleteMapping("/{gameId}/{playerId}")
@@ -56,6 +62,7 @@ Indicates
     
 ## @DeleteMapping - deleteGame 
    
+To delete a game. This is done by passing game Id in the path.
     
     
      @DeleteMapping("/{id}")
@@ -72,6 +79,8 @@ Indicates
     
 ## @PatchMapping - startNewGame
 
+ To add a new game. This is done by adding game Id in the path.
+
     
       @PatchMapping(value = "/{gameId}")
     public ResponseEntity<Reply> startNewGame(@PathVariable("gameId") Long gameId) {
@@ -80,6 +89,8 @@ Indicates
     
     
 ## @PutMapping - submitTurn
+
+To submit turn to a running game. This is done by passing gameId, playerId and int guess.
 
     
      @PutMapping(value = "/{gameId}")
