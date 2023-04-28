@@ -50,3 +50,48 @@ This class is responsible for handling HTTP requests related to player data in t
 • addNewPlayer(Player player): This method adds a new player to the database and returns a 201 CREATED response.
 
 •deletePlayer(Long id): This method deletes a player from the database by their unique identifier. If the player is not found, a 404 NOT FOUND response is returned.
+
+## DTO "LoserBoardPlayer"
+
+The LoserBoardPlayer DTO represents a player object that is used to store information about players that have lost games on the TwentyOne API platform and transfers information without unnecessary informations about the game. For example, if a player were to lose 3 games it would display the number of games lost and the name of the player instead of showing the number of games played and other unnecessary informations.
+
+### Parameters 
+
+The LoserBoardPlayer DTO has three parameters:
+
+• 'name' : a string that represents the player's name.
+
+• 'playerId' : a Long integer that represents the player's unique ID.
+
+• 'gamesLost' : an integer that represents the number of games a player has lost.
+
+### Constructors
+
+The LoserBoardPlayer DTO has two constructors:
+
+• A constructor that takes in the values for 'name', 'playerId', and 'gamesLost'.
+
+• A default empty constructor that takes no parameters.
+
+### Getters and Setters
+
+The LoserBoardPlayer DTO has a set of getters and setters for each parameter. These methods allow the values of the 'LoserBoardPlayer' object to be accessed and modified.
+
+### Endpoint
+
+@GetMapping: This annotation is used to handle GET requests. The value attribute is set to "/", which means that this method will handle requests to the root URL of "/loserBoard". This would return:
+
+    • playerId
+
+    • numbers of games lost
+
+    • a string which has the name of the playerId
+
+    
+    @GetMapping
+    public ResponseEntity<List<LoserBoardPlayer>> getLoserBoard(){
+         List<LoserBoardPlayer> players = playerService.getLoserBoard();
+         return new ResponseEntity<>(players, HttpStatus.OK);
+    }
+
+
