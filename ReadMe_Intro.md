@@ -20,7 +20,6 @@
 	* Dependencies
 		* DevTools
 		* Web
-		* DevTools
 		* PostgreSQL
 		* JPA
 
@@ -29,6 +28,13 @@
 	* Postman
 	* Postico
 	* PostgreSQL
+
+* Installation instructions
+	* Git clone from the Repo 
+	* *Include SSH Key Here*
+	* In your computer's terminal, "git clone" + SSH Key
+	* All java files are in *Backend_TwentyOne_API*	
+	* ReadMe and Diagrams are in the *Project* directory	
 
 
 
@@ -46,6 +52,7 @@
 * add a "loserboard" for how many times each player lost!
   
 ## UML Diagram and ERD
+
 
 ## Please provide example data and the exact path of each implemented route
 
