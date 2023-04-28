@@ -25,12 +25,12 @@ public class DataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception{
 
-        Player player1 = new Player("Intisar");
+        Player player1 = new Player("Taliane");
+        player1.setGamesLost(2);
         playerRepository.save(player1);
-        Player player2 = new Player("Will");
+        Player player2 = new Player("Intisar");
         playerRepository.save(player2);
-        Player player3 = new Player("Taliane");
-        player3.setGamesLost(2);
+        Player player3 = new Player("Will");
         playerRepository.save(player3);
         Player player4 = new Player("Isabel");
         player4.setGamesLost(3);
