@@ -124,12 +124,14 @@ public class GameService {
             if (game.getGameType().equals(GameType.DIFFICULT)){
                 computerTurn = computerTurnDifficult(game);
             } else { computerTurn = computerTurnEasy(game);}
-            message = "Computer starts. Computer plays " + computerTurn + ". Your turn!";
+            message = "Computer starts. Computer plays " + computerTurn + ". Player "
+                    + game.getCurrentPlayerId() + ", " + playerService.getPlayerNameByGame(game)
+                    + ",git Your turn!";
         }
 
 //        if player to start
         else{
-            message = playerService.getPlayerNameByGame(game) + " to start. Your turn.";
+            message ="Player " + game.getCurrentPlayerId() + ", " + playerService.getPlayerNameByGame(game) + " to start. Your turn.";
         }
         gameRepository.save(game);
 
@@ -328,7 +330,7 @@ public class GameService {
             gameRepository.save(game);
             return new Reply(game.getCurrentTotal(),
                     false,
-                    "It is player " + game.getCurrentPlayerId() + "'s turn"
+                    "It is player " + game.getCurrentPlayerId() + ", " + playerService.getPlayerNameById(game.getCurrentPlayerId())  + "'s turn"
             );
         }
     }
