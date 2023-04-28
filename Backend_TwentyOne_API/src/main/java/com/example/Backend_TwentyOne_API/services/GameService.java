@@ -262,7 +262,7 @@ public class GameService {
         if (game.getCurrentTotal()> 20){
             game.setComplete(true);
             gameRepository.save(game);
-            player.setGamesLost(player.getGamesLost()+1);
+            player.incrementGamesLost();
             playerRepository.save(player);
 
             return new Reply(game.getCurrentTotal(),game.getComplete(),"Game Over! You lose :(");
@@ -312,7 +312,7 @@ public class GameService {
         if (game.getCurrentTotal()> 20) {
             game.setComplete(true);
             gameRepository.save(game);
-            currentPlayer.setGamesLost(currentPlayer.getGamesLost()+1);
+            currentPlayer.incrementGamesLost();
             playerRepository.save(currentPlayer);
             return new Reply(
                     game.getCurrentTotal(),
