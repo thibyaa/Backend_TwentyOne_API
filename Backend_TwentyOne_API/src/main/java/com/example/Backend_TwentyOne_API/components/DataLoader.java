@@ -36,22 +36,27 @@ public class DataLoader implements ApplicationRunner {
         player4.setGamesLost(3);
         playerRepository.save(player4);
 
-        Game game1 = new Game(player1, GameType.EASY);
-        game1.setHasStarted(true);
+
+        Game game1 = new Game(player1, GameType.MULTIPLAYER);
+        game1.addPlayer(player2);
+        game1.addPlayer(player3);
+        game1.addPlayer(player4);
         gameRepository.save(game1);
+
+
         Game game2 = new Game(player2, GameType.DIFFICULT);
         gameRepository.save(game2);
 
-        Game game3 = new Game(player3, GameType.MULTIPLAYER);
-        game3.addPlayer(player1);
-        gameRepository.save(game3);
-
-        Game game4 = new Game(player4, GameType.MULTIPLAYER);
-        gameRepository.save(game4);
-
-        Game game5 = new Game(player1, GameType.EASY);
-        game5.setComplete(true);
-        gameRepository.save(game5);
+//        Game game3 = new Game(player3, GameType.MULTIPLAYER);
+//        game3.addPlayer(player1);
+//        gameRepository.save(game3);
+//
+//        Game game4 = new Game(player4, GameType.MULTIPLAYER);
+//        gameRepository.save(game4);
+//
+//        Game game5 = new Game(player1, GameType.EASY);
+//        game5.setComplete(true);
+//        gameRepository.save(game5);
 
 
     }
