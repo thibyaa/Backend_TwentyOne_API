@@ -36,10 +36,12 @@ Indicates
     public ResponseEntity<Reply> createNewGame(@RequestParam Long playerId, @RequestParam String gameType) {
         return gameService.createNewGame(playerId,gameType);
     }
-
-## @PostMapping - createNewGame
+    
 
 ## @PostMapping - addPlayerToGame 
+
+
+
 
 ## @DeleteMapping - removePlayerToGame
 
