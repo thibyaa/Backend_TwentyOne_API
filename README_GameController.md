@@ -30,7 +30,7 @@ To retrieve a single game by id. If game is not found, returns http 404 exceptio
     
 ## @PostMapping - createNewGame
 
-url: GET POST /games/{id}
+url: GET POST localhost:8080/games?playerId=1&gameType=difficult 
 
 To create a new game.
 
@@ -40,6 +40,8 @@ To create a new game.
     }
     
 ## @PostMapping - addPlayerToGame 
+
+url: 
 
 To add the player to a game. Add a player to a game by passing player Id and game Id in the path.
     
