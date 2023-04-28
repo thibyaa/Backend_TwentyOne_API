@@ -53,6 +53,12 @@
   
 ## UML Diagram and ERD
 
+###ERD (Database Diagram)
+![UML diagram](http://raw.githubusercontent.com/williamdorling/Backend_TwentyOne_API/main/TwentyOneERD.png)
+
+###Final UML Diagram
+![UML diagram](https://raw.githubusercontent.com/williamdorling/Backend_TwentyOne_API/main/TwentyOneUML.png)
+
 
 ## Please provide example data and the exact path of each implemented route
 
