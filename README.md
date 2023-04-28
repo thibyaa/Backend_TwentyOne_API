@@ -259,6 +259,8 @@ To submit turn to a running game. This is done by passing gameId, playerId and i
 
 ## Further extensions 
 
+* including a 'reset' function for the game
+* having a multiplayer game that includes the computer as one of the players
 
 ## Any bugs?!
 
