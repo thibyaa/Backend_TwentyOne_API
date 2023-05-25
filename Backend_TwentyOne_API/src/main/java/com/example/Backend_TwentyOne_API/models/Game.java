@@ -27,6 +27,7 @@ public class Game {
     private Long currentPlayerId;
 
     @Column(name = "game_type")
+    @Enumerated(EnumType.STRING)
     private GameType gameType;
 
     @ManyToOne
