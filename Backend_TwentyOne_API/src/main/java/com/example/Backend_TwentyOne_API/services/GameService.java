@@ -55,7 +55,7 @@ public class GameService {
              responseEntity = new ResponseEntity(null, HttpStatus.NOT_FOUND);
         }
 //        Create game depending on gameType input
-        else if (gameType.equalsIgnoreCase("Easy")) {
+        else if (gameType.equalsIgnoreCase("easy")) {
             GameType newGameType = GameType.EASY;
             responseEntity = createGameByType(newGameType, player);
         } else if (gameType.equalsIgnoreCase("difficult")) {
